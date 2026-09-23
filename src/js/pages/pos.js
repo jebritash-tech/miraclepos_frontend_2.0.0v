@@ -3477,7 +3477,8 @@ const app = createApp({
                     return;
                 }
 
-                const response = await axios.get(`${API_BASE}/reports/sales`, {
+                // ✅ مسار POS الجديد — يجلب مبيعات الوردية المفتوحة فقط
+                const response = await axios.get(`${API_BASE}/pos/recent-sales`, {
                     params: { _ts: Date.now() },
                     headers: {
                         'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -3486,7 +3487,10 @@ const app = createApp({
                     }
                 });
 
-                const serverSales = response.data?.recent || [];
+                const serverSales =
+                    response.data?.recent
+                    ?? response.data?.data
+                    ?? (Array.isArray(response.data) ? response.data : []);
 
                 const allSales = [...serverSales, ...localSales];
                 const uniqueMap = new Map();
