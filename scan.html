@@ -46,9 +46,7 @@
             gap: 8px;
         }
 
-        .header h1 i {
-            color: #10b981;
-        }
+        .header h1 i { color: #10b981; }
 
         .status {
             display: flex;
@@ -86,16 +84,42 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            background: #000;
         }
 
+        /* ✅ CSS محسّن لحاوية القارئ */
         #reader {
+            position: relative !important;
             width: 100% !important;
             height: 100% !important;
-            border: none !important;
+            min-height: 300px !important;
+            background: #000 !important;
+            overflow: hidden !important;
         }
 
         #reader video {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
             object-fit: cover !important;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            z-index: 5 !important;
+        }
+
+        #reader > div {
+            border: none !important;
+            padding: 0 !important;
+        }
+
+        /* إخفاء لوحة تحكم Html5Qrcode الداخلية */
+        #reader__dashboard,
+        #reader__scan_region img[alt="Info icon"],
+        #reader__header_message {
+            display: none !important;
         }
 
         .scan-overlay {
@@ -203,6 +227,7 @@
             justify-content: center;
             z-index: 1000;
             transition: opacity 0.5s;
+            padding: 20px;
         }
 
         .loading-overlay.hidden { opacity: 0; pointer-events: none; }
@@ -225,6 +250,47 @@
             text-align: center;
         }
 
+        /* لوحة التشخيص */
+        .debug-panel {
+            margin-top: 24px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 14px;
+            width: 100%;
+            max-width: 400px;
+            font-family: monospace;
+            font-size: 12px;
+            text-align: right;
+            direction: rtl;
+        }
+
+        .debug-panel .debug-title {
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: #fbbf24;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 13px;
+        }
+
+        .debug-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+        }
+
+        .debug-item:last-child { border-bottom: none; }
+
+        .debug-key { color: #94a3b8; }
+
+        .debug-value.ok { color: #10b981; font-weight: 700; }
+        .debug-value.fail { color: #ef4444; font-weight: 700; }
+        .debug-value.pending { color: #f59e0b; }
+
         .error-box {
             position: fixed;
             inset: 0;
@@ -236,6 +302,7 @@
             padding: 24px;
             z-index: 999;
             text-align: center;
+            overflow-y: auto;
         }
 
         .error-box i {
@@ -245,7 +312,31 @@
         }
 
         .error-box h2 { font-size: 20px; margin-bottom: 12px; }
-        .error-box p { color: #94a3b8; font-size: 14px; margin-bottom: 24px; line-height: 1.6; }
+        .error-box p {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 12px;
+            line-height: 1.6;
+            max-width: 400px;
+            white-space: pre-line;
+        }
+
+        .error-box .detail {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 10px;
+            padding: 12px;
+            margin: 16px 0;
+            font-family: monospace;
+            font-size: 12px;
+            color: #fca5a5;
+            text-align: right;
+            direction: rtl;
+            max-width: 400px;
+            word-break: break-all;
+            white-space: pre-wrap;
+        }
+
         .error-box button {
             background: #10b981;
             color: white;
@@ -255,6 +346,7 @@
             font-weight: 700;
             font-size: 15px;
             cursor: pointer;
+            margin-top: 8px;
         }
 
         .manual-mode {
@@ -307,32 +399,25 @@
             padding: 16px;
             display: inline-block;
             margin: 12px auto;
+            min-width: 280px;
+            min-height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .qr-display img {
+        .qr-display #answerQRContainer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-display #answerQRContainer img,
+        .qr-display #answerQRContainer canvas {
             display: block;
-            width: 100%;
             max-width: 280px;
             height: auto;
         }
-
-        .action-btn {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 14px;
-            font-weight: 800;
-            font-size: 15px;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 8px;
-            transition: transform 0.2s;
-        }
-
-        .action-btn:active { transform: scale(0.95); }
 
         .camera-input {
             width: 100%;
@@ -341,6 +426,7 @@
             border-radius: 16px;
             overflow: hidden;
             background: #000;
+            min-height: 300px;
         }
 
         .flash {
@@ -357,6 +443,21 @@
             0% { opacity: 0.8; }
             100% { opacity: 0; }
         }
+
+        .camera-test-btn {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
     </style>
     <link rel="stylesheet" href="./no-zoom.css">
 </head>
@@ -372,6 +473,7 @@
         justify-content: center;
         z-index: 99999;
         transition: opacity 0.4s;
+        padding: 20px;
     ">
         <div style="
             width: 60px;
@@ -386,23 +488,70 @@
             color: #94a3b8;
             font-size: 14px;
             font-family: Cairo, Arial, sans-serif;
-            margin: 0;
+            margin: 0 0 16px 0;
         ">جاري التحميل...</p>
+
+        <div class="debug-panel" id="debugPanel">
+            <div class="debug-title">
+                <i class="fas fa-stethoscope"></i>
+                تشخيص النظام
+            </div>
+            <div class="debug-item">
+                <span class="debug-key">Html5Qrcode</span>
+                <span class="debug-value pending" id="dbg-html5">⏳ انتظار</span>
+            </div>
+            <div class="debug-item">
+                <span class="debug-key">SimplePeer</span>
+                <span class="debug-value pending" id="dbg-simplepeer">⏳ انتظار</span>
+            </div>
+            <div class="debug-item">
+                <span class="debug-key">PeerJS</span>
+                <span class="debug-value pending" id="dbg-peer">⏳ انتظار</span>
+            </div>
+            <div class="debug-item">
+                <span class="debug-key">QRCode (qrcodejs)</span>
+                <span class="debug-value pending" id="dbg-qrcode">⏳ انتظار</span>
+            </div>
+            <div class="debug-item">
+                <span class="debug-key">HTTPS</span>
+                <span class="debug-value pending" id="dbg-https">⏳</span>
+            </div>
+            <div class="debug-item">
+                <span class="debug-key">Online</span>
+                <span class="debug-value pending" id="dbg-online">⏳</span>
+            </div>
+            <div class="debug-item">
+                <span class="debug-key">Camera API</span>
+                <span class="debug-value pending" id="dbg-camera">⏳</span>
+            </div>
+            <div class="debug-item">
+                <span class="debug-key">Camera Permission</span>
+                <span class="debug-value pending" id="dbg-permission">⏳</span>
+            </div>
+        </div>
+
+        <button class="camera-test-btn" onclick="testCameraManually()">
+            <i class="fas fa-camera"></i>
+            اختبار الكاميرا يدوياً
+        </button>
+
         <style>
             @keyframes spin { to { transform: rotate(360deg); } }
             #initial-loader.hidden { opacity: 0; pointer-events: none; }
         </style>
     </div>
-    <div class="loading-overlay" id="loadingOverlay">
+
+    <div class="loading-overlay hidden" id="loadingOverlay">
         <div class="spinner"></div>
         <p id="loadingText">جاري التهيئة...</p>
     </div>
 
     <div class="error-box" id="errorBox">
         <i class="fas fa-exclamation-triangle"></i>
-        <h2>تعذر الاتصال</h2>
+        <h2 id="errorTitle">تعذر الاتصال</h2>
         <p id="errorText">يرجى إعادة فتح الرابط من الكمبيوتر.</p>
-        <button onclick="location.reload()">إعادة المحاولة</button>
+        <div class="detail" id="errorDetail" style="display: none;"></div>
+        <button onclick="location.reload()">🔄 إعادة المحاولة</button>
     </div>
 
     <!-- Auto Mode -->
@@ -442,7 +591,7 @@
         </div>
     </div>
 
-    <!-- Manual Mode - Simplified -->
+    <!-- Manual Mode -->
     <div class="manual-mode" id="manualMode">
         <div class="header" style="margin-bottom: 16px; border-radius: 16px;">
             <h1><i class="fas fa-wifi-slash"></i> وضع بدون إنترنت</h1>
@@ -452,91 +601,150 @@
             </div>
         </div>
 
-        <!-- Step 1: Scan Offer QR -->
         <div class="manual-step active" id="step1">
             <h2><i class="fas fa-qrcode"></i> الخطوة 1: امسح الرمز من الكمبيوتر</h2>
             <p>وجّه كاميرا هذا الجهاز نحو رمز QR المعروض على شاشة الكمبيوتر.</p>
             <div class="camera-input" id="offerScanner"></div>
-            <div id="offerStatus" style="margin-top: 12px; font-size: 12px; color: #64748b;">
-                <i class="fas fa-info-circle"></i>
-                في انتظار مسح الرمز...
-            </div>
         </div>
 
-        <!-- Step 2: Show Answer QR -->
         <div class="manual-step" id="step2" style="display: none;">
             <h2><i class="fas fa-check-circle" style="color: #10b981;"></i> الخطوة 2: امسح هذا الرمز بالكمبيوتر</h2>
             <p>اعرض هذا الرمز على شاشة الكمبيوتر حتى يمسحه.</p>
             <div class="qr-display">
-                <img id="answerQRImage" alt="Answer QR" />
+                <div id="answerQRContainer"></div>
             </div>
-            <p style="font-size: 12px; margin-top: 12px; color: #f59e0b;">
-                <i class="fas fa-clock"></i>
-                في انتظار الاتصال...
-            </p>
         </div>
 
-        <!-- Step 3: Connected -->
         <div class="manual-step" id="step3" style="display: none;">
             <h2><i class="fas fa-check-double" style="color: #10b981;"></i> تم الاتصال!</h2>
             <p>جاهز للمسح. وجّه كاميرا الهاتف نحو الباركود.</p>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/simple-peer@9.11.1/simplepeer.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <!-- ═══════════════════════════════════════════════════════════
+         المكتبات
+         ═══════════════════════════════════════════════════════════ -->
+    <script>
+        window.__libStatus = {
+            html5: false,
+            simplepeer: false,
+            peer: false,
+            qrcode: false,
+        };
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"
+            onerror="window.__libStatus.html5Error = 'فشل تحميل html5-qrcode';"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"
+            onerror="window.__libStatus.peerError = 'فشل تحميل PeerJS';"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/simple-peer@9.11.1/simplepeer.min.js"
+            onerror="window.__libStatus.simplepeerError = 'فشل تحميل SimplePeer';"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
+            onerror="window.__libStatus.qrcodeError = 'فشل تحميل qrcodejs';"></script>
 
     <script>
-        // في بداية scan.html
-       
+        window.__libStatus.html5 = (typeof Html5Qrcode !== 'undefined');
+        window.__libStatus.simplepeer = (typeof SimplePeer !== 'undefined');
+        window.__libStatus.peer = (typeof Peer !== 'undefined');
+        window.__libStatus.qrcode = (typeof QRCode !== 'undefined');
+    </script>
 
-        
-        const urlParams = new URLSearchParams(window.location.search);
-        const mode = urlParams.get('mode') || 'auto';
-        const peerId = urlParams.get('peer');
+    <script>
+    (function () {
+        'use strict';
 
-        const state = {
-            mode: mode,
-            peer: null,
-            connection: null,
-            simplePeer: null,
-            isConnected: false,
-            html5QrCode: null,
-            offerScanner: null,
-            scanCount: 0,
-            lastSentCode: '',
-            lastSentTime: 0,
-        };
-        console.log('📱 Scan page, mode:', mode, 'peer:', peerId);
-
-        if (!peerId && mode === 'auto') {
-            showError('معرّف الاتصال غير موجود في الرابط');
-            return;
+        // ═══════════════════════════════════════════════════════════
+        // Debug
+        // ═══════════════════════════════════════════════════════════
+        function setDebug(id, value, status) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.textContent = value;
+            el.className = 'debug-value ' + (status || '');
         }
-        const loadingOverlay = document.getElementById('loadingOverlay');
-        const loadingText = document.getElementById('loadingText');
-        const errorBox = document.getElementById('errorBox');
-        const errorText = document.getElementById('errorText');
-        const autoMode = document.getElementById('autoMode');
-        const manualMode = document.getElementById('manualMode');
-        const connectionStatus = document.getElementById('connectionStatus');
-        const lastScan = document.getElementById('lastScan');
-        const lastScanCode = document.getElementById('lastScanCode');
-        const scanCountEl = document.getElementById('scanCount');
+
+        function updateDebugPanel() {
+            const s = window.__libStatus;
+
+            setDebug('dbg-html5', s.html5 ? '✅ محمّلة' : (s.html5Error || '❌ غير محمّلة'), s.html5 ? 'ok' : 'fail');
+            setDebug('dbg-simplepeer', s.simplepeer ? '✅ محمّلة' : (s.simplepeerError || '❌ غير محمّلة'), s.simplepeer ? 'ok' : 'fail');
+            setDebug('dbg-peer', s.peer ? '✅ محمّلة' : (s.peerError || '❌ غير محمّلة'), s.peer ? 'ok' : 'fail');
+            setDebug('dbg-qrcode', s.qrcode ? '✅ محمّلة' : (s.qrcodeError || '❌ غير محمّلة'), s.qrcode ? 'ok' : 'fail');
+            setDebug('dbg-https', window.location.protocol === 'https:' ? '✅ آمن' : '⚠️ غير آمن', window.location.protocol === 'https:' ? 'ok' : 'pending');
+            setDebug('dbg-online', navigator.onLine ? '✅ متصل' : '❌ غير متصل', navigator.onLine ? 'ok' : 'fail');
+
+            const hasMedia = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+            setDebug('dbg-camera', hasMedia ? '✅ متاح' : '❌ غير متاح', hasMedia ? 'ok' : 'fail');
+
+            if (navigator.permissions && navigator.permissions.query) {
+                navigator.permissions.query({ name: 'camera' })
+                    .then(result => {
+                        const labels = {
+                            'granted': '✅ مسموح',
+                            'denied': '❌ مرفوض',
+                            'prompt': '⏳ لم يُطلب',
+                        };
+                        const stat = result.state === 'granted' ? 'ok'
+                                   : result.state === 'denied' ? 'fail'
+                                   : 'pending';
+                        setDebug('dbg-permission', labels[result.state] || result.state, stat);
+                    })
+                    .catch(() => setDebug('dbg-permission', '⚠️ غير معروف', 'pending'));
+            } else {
+                setDebug('dbg-permission', '⚠️ API غير مدعوم', 'pending');
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Helpers
+        // ═══════════════════════════════════════════════════════════
+        function hideInitialLoader() {
+            const loader = document.getElementById('initial-loader');
+            if (loader) {
+                loader.classList.add('hidden');
+                setTimeout(() => { if (loader.parentNode) loader.remove(); }, 500);
+            }
+        }
+
+        function showError(title, message, detail) {
+            const titleEl = document.getElementById('errorTitle');
+            const textEl = document.getElementById('errorText');
+            const detailEl = document.getElementById('errorDetail');
+
+            if (titleEl) titleEl.textContent = title || 'خطأ';
+            if (textEl) textEl.textContent = message || '';
+
+            if (detail) {
+                detailEl.textContent = detail;
+                detailEl.style.display = 'block';
+            } else {
+                detailEl.style.display = 'none';
+            }
+
+            const errorBox = document.getElementById('errorBox');
+            if (errorBox) errorBox.style.display = 'flex';
+
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) loadingOverlay.classList.add('hidden');
+
+            hideInitialLoader();
+        }
+
+        function hideLoading() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) loadingOverlay.classList.add('hidden');
+            hideInitialLoader();
+        }
 
         function updateConnectionStatus(status, text) {
+            const connectionStatus = document.getElementById('connectionStatus');
             if (!connectionStatus) return;
             connectionStatus.className = 'status ' + status;
             const textEl = connectionStatus.querySelector('.status-text');
             if (textEl) textEl.textContent = text;
-        }
-
-        function showError(message) {
-            errorText.textContent = message;
-            errorBox.style.display = 'flex';
-            loadingOverlay.classList.add('hidden');
         }
 
         function flashScreen() {
@@ -565,6 +773,30 @@
             } catch (e) {}
         }
 
+        // ═══════════════════════════════════════════════════════════
+        // State
+        // ═══════════════════════════════════════════════════════════
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode') || 'auto';
+        const peerId = urlParams.get('peer');
+
+        const state = {
+            mode: mode,
+            peer: null,
+            connection: null,
+            simplePeer: null,
+            isConnected: false,
+            html5QrCode: null,
+            offerScanner: null,
+            scanCount: 0,
+            lastSentCode: '',
+            lastSentTime: 0,
+            cameraActive: false,
+        };
+
+        // ═══════════════════════════════════════════════════════════
+        // Barcode Sender
+        // ═══════════════════════════════════════════════════════════
         function sendBarcode(code) {
             const now = Date.now();
             if (code === state.lastSentCode && (now - state.lastSentTime) < 2000) return false;
@@ -575,28 +807,30 @@
                 try {
                     state.connection.send({ type: 'barcode', code, timestamp: now });
                     sent = true;
-                } catch (e) {
-                    console.error('PeerJS send error:', e);
-                }
+                } catch (e) { console.error(e); }
             }
 
             if (!sent && state.simplePeer && state.simplePeer.connected) {
                 try {
                     state.simplePeer.send(JSON.stringify({ type: 'barcode', code, timestamp: now }));
                     sent = true;
-                } catch (e) {
-                    console.error('SimplePeer send error:', e);
-                }
+                } catch (e) { console.error(e); }
             }
 
             if (sent) {
                 state.lastSentCode = code;
                 state.lastSentTime = now;
                 state.scanCount++;
+
+                const scanCountEl = document.getElementById('scanCount');
+                const lastScanCode = document.getElementById('lastScanCode');
+                const lastScan = document.getElementById('lastScan');
+
                 if (scanCountEl) scanCountEl.textContent = state.scanCount;
                 if (lastScanCode) lastScanCode.textContent = code;
                 if (lastScan) lastScan.style.display = 'block';
                 setTimeout(() => { if (lastScan) lastScan.style.display = 'none'; }, 1500);
+
                 flashScreen();
                 playBeep();
                 if (navigator.vibrate) navigator.vibrate(50);
@@ -605,20 +839,154 @@
             return sent;
         }
 
-        // ============================================================
-        // AUTO MODE
-        // ============================================================
-        async function startAutoMode() {
-            autoMode.style.display = 'flex';
-
-            if (!peerId) {
-                showError('الرابط لا يحتوي على معرّف الاتصال.');
+        // ═══════════════════════════════════════════════════════════
+        // ✅ تشغيل كاميرا الباركود
+        // ═══════════════════════════════════════════════════════════
+        async function activateCamera() {
+            if (state.html5QrCode) {
+                console.log('⚠️ Camera already active');
                 return;
             }
 
-            loadingText.textContent = 'جاري الاتصال بالكمبيوتر...';
+            const readerEl = document.getElementById('reader');
+            if (!readerEl) throw new Error('Reader element not found');
 
-            state.peer = new Peer({ debug: 1 });
+            // تأكد من عدم وجود فيديو قديم
+            readerEl.innerHTML = '';
+
+            console.log('📷 Creating Html5Qrcode...');
+
+            state.html5QrCode = new Html5Qrcode('reader', {
+                formatsToSupport: [
+                    Html5QrcodeSupportedFormats.EAN_13,
+                    Html5QrcodeSupportedFormats.EAN_8,
+                    Html5QrcodeSupportedFormats.CODE_128,
+                    Html5QrcodeSupportedFormats.CODE_39,
+                    Html5QrcodeSupportedFormats.UPC_A,
+                    Html5QrcodeSupportedFormats.UPC_E,
+                    Html5QrcodeSupportedFormats.QR_CODE,
+                    Html5QrcodeSupportedFormats.CODE_93,
+                    Html5QrcodeSupportedFormats.ITF,
+                    Html5QrcodeSupportedFormats.CODABAR,
+                ],
+                verbose: false,
+                experimentalFeatures: {
+                    useBarCodeDetectorIfSupported: true,
+                },
+            });
+
+            const config = {
+                fps: 15,
+                qrbox: (w, h) => {
+                    const minEdge = Math.min(w, h);
+                    const size = Math.floor(minEdge * 0.7);
+                    return { width: size, height: size };
+                },
+                aspectRatio: 1.0,
+                disableFlip: false,
+                videoConstraints: {
+                    facingMode: { ideal: 'environment' },
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
+                },
+            };
+
+            console.log('📷 Starting Html5Qrcode...');
+
+            try {
+                await state.html5QrCode.start(
+                    { facingMode: 'environment' },
+                    config,
+                    onScanSuccess,
+                    () => {}
+                );
+
+                console.log('✅ Html5Qrcode started successfully');
+                state.cameraActive = true;
+
+                // تأكد من أن الفيديو مرئي
+                setTimeout(() => {
+                    const video = document.querySelector('#reader video');
+                    if (video) {
+                        video.style.display = 'block';
+                        video.style.visibility = 'visible';
+                        video.style.opacity = '1';
+                        video.setAttribute('playsinline', 'true');
+                        video.setAttribute('autoplay', 'true');
+                        video.setAttribute('muted', 'true');
+                        console.log('✅ Video verified:', video.videoWidth, 'x', video.videoHeight);
+                    }
+                }, 1000);
+
+            } catch (err) {
+                console.error('❌ Html5Qrcode.start error:', err);
+                throw err;
+            }
+        }
+
+        function onScanSuccess(decodedText) {
+            sendBarcode(decodedText);
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // AUTO MODE
+        // ═══════════════════════════════════════════════════════════
+        async function startAutoMode() {
+            document.getElementById('autoMode').style.display = 'flex';
+
+            if (!peerId) {
+                showError('معرّف مفقود', 'الرابط لا يحتوي على معرّف الاتصال.');
+                return;
+            }
+
+            const loadingText = document.getElementById('loadingText');
+            if (loadingText) loadingText.textContent = 'جاري تشغيل الكاميرا...';
+
+            // ✅ شغّل الكاميرا مباشرة
+            try {
+                await activateCamera();
+                hideLoading();
+                updateDebugPanel();
+            } catch (err) {
+                console.error('❌ Camera error:', err);
+
+                let title = 'تعذر فتح الكاميرا';
+                let msg = '';
+                let detail = `name: ${err.name || 'N/A'}\nmessage: ${err.message || 'N/A'}\n` +
+                             `string: ${String(err)}`;
+
+                if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                    msg = 'يجب السماح بالوصول للكاميرا.\n\n' +
+                          'الحل:\n' +
+                          '1. افتح إعدادات Chrome\n' +
+                          '2. المواقع → الكاميرا\n' +
+                          '3. اسمح للموقع';
+                } else if (err.name === 'NotFoundError') {
+                    msg = 'لا توجد كاميرا على هذا الجهاز.';
+                } else if (err.name === 'NotReadableError' || String(err).includes('NotReadable')) {
+                    msg = 'الكاميرا مستخدمة من تطبيق آخر. أغلق التطبيقات الأخرى.';
+                } else if (err.name === 'OverconstrainedError') {
+                    msg = 'مواصفات الكاميرا غير مدعومة.';
+                } else if (String(err).toLowerCase().includes('secure')) {
+                    msg = 'يجب استخدام HTTPS لفتح الكاميرا.';
+                } else {
+                    msg = err.message || String(err) || 'خطأ غير معروف';
+                }
+
+                showError(title, msg, detail);
+                return;
+            }
+
+            // الآن اتصل بـ PeerJS
+            if (loadingText) loadingText.textContent = 'جاري الاتصال بالكمبيوتر...';
+
+            try {
+                state.peer = new Peer({ debug: 1 });
+            } catch (err) {
+                console.error('❌ Peer init error:', err);
+                updateConnectionStatus('disconnected', 'فشل');
+                return;
+            }
 
             state.peer.on('open', (id) => {
                 console.log('📱 Phone ready, ID:', id);
@@ -635,19 +1003,15 @@
                     state.isConnected = true;
                     updateConnectionStatus('connected', 'متصل');
                     conn.send({ type: 'hello', device: navigator.userAgent });
-                    startCamera();
                 });
 
                 conn.on('data', (data) => {
-                    if (data.type === 'ack') {
-                        // Confirmed
-                    }
+                    if (data && data.type === 'ack') {}
                 });
 
                 conn.on('close', () => {
                     state.isConnected = false;
                     updateConnectionStatus('disconnected', 'انقطع');
-                    showError('انقطع الاتصال بالكمبيوتر.');
                 });
 
                 conn.on('error', (err) => {
@@ -659,23 +1023,57 @@
 
             state.peer.on('error', (err) => {
                 console.error('Peer error:', err);
-                let msg = 'فشل الاتصال بالكمبيوتر.';
-                if (err.type === 'peer-unavailable') msg = 'الكمبيوتر غير متاح. تأكد من فتح نافذة المسح.';
-                else if (err.type === 'network') msg = 'مشكلة في الشبكة.';
-                showError(msg);
+
+                let statusText = 'فشل الاتصال';
+                if (err.type === 'peer-unavailable') statusText = 'الكمبيوتر غير متاح';
+                else if (err.type === 'network') statusText = 'مشكلة في الشبكة';
+                else if (err.type === 'server-error') statusText = 'خطأ في الخادم';
+
+                updateConnectionStatus('disconnected', statusText);
+
+                const hint = document.createElement('div');
+                hint.style.cssText = `
+                    position: fixed;
+                    bottom: 60px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: rgba(239, 68, 68, 0.9);
+                    color: white;
+                    padding: 10px 20px;
+                    border-radius: 10px;
+                    font-size: 13px;
+                    z-index: 100;
+                    text-align: center;
+                    max-width: 90%;
+                `;
+                hint.textContent = `⚠️ ${statusText} — الكاميرا تعمل، لكن لن تُرسل المسحات`;
+                document.body.appendChild(hint);
+                setTimeout(() => hint.remove(), 5000);
             });
         }
 
-        // ============================================================
-        // MANUAL MODE - Simplified
-        // ============================================================
+        // ═══════════════════════════════════════════════════════════
+        // MANUAL MODE
+        // ═══════════════════════════════════════════════════════════
         async function startManualMode() {
-            manualMode.classList.add('active');
-            loadingOverlay.classList.add('hidden');
+            document.getElementById('manualMode').classList.add('active');
+
+            const loadingText = document.getElementById('loadingText');
+            if (loadingText) loadingText.textContent = 'جاري تشغيل الكاميرا...';
+
+            hideLoading();
             await startOfferScanner();
         }
 
         async function startOfferScanner() {
+            const offerEl = document.getElementById('offerScanner');
+            if (!offerEl) {
+                showError('خطأ في الصفحة', 'عنصر الماسح غير موجود.');
+                return;
+            }
+
+            offerEl.innerHTML = '';
+
             state.offerScanner = new Html5Qrcode('offerScanner', {
                 formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
                 verbose: false,
@@ -685,6 +1083,11 @@
                 fps: 10,
                 qrbox: { width: 250, height: 250 },
                 aspectRatio: 1.0,
+                videoConstraints: {
+                    facingMode: { ideal: 'environment' },
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
+                },
             };
 
             try {
@@ -696,14 +1099,22 @@
                 );
             } catch (err) {
                 console.error('Camera error:', err);
-                showError('تعذر فتح الكاميرا. اسمح بالوصول للكاميرا.');
+
+                let msg = 'تعذر فتح الكاميرا.';
+                if (err.name === 'NotAllowedError') msg = 'يجب السماح بالوصول للكاميرا.';
+                else if (err.name === 'NotFoundError') msg = 'لا توجد كاميرا على هذا الجهاز.';
+                else if (err.name === 'NotReadableError') msg = 'الكاميرا مستخدمة من تطبيق آخر.';
+
+                showError('تعذر فتح الكاميرا', msg, `${err.name}: ${err.message}`);
             }
         }
 
         async function onOfferScanned(decodedText) {
             try {
-                await state.offerScanner.stop();
-                state.offerScanner = null;
+                if (state.offerScanner) {
+                    await state.offerScanner.stop();
+                    state.offerScanner = null;
+                }
             } catch (e) {}
 
             await handleManualOffer(decodedText);
@@ -712,7 +1123,6 @@
         async function handleManualOffer(offerData) {
             try {
                 const decoded = JSON.parse(atob(offerData));
-                console.log('📥 Received offer');
 
                 document.getElementById('step1').style.display = 'none';
                 document.getElementById('step2').style.display = 'block';
@@ -731,28 +1141,33 @@
 
                 state.simplePeer.on('signal', (data) => {
                     if (data.type === 'answer') {
-                        const answerEncoded = btoa(JSON.stringify(data));
+                        if (typeof QRCode === 'undefined') {
+                            showError('مكتبة QR مفقودة', 'مكتبة توليد الـ QR لم تُحمّل.');
+                            return;
+                        }
 
-                        QRCode.toDataURL(answerEncoded, {
-                            width: 500,
-                            margin: 1,
-                            errorCorrectionLevel: 'L',
-                            color: {
-                                dark: '#0f172a',
-                                light: '#ffffff',
-                            },
-                        }, (err, url) => {
-                            if (err) {
-                                console.error('QR generation error:', err);
-                                return;
-                            }
-                            document.getElementById('answerQRImage').src = url;
-                        });
+                        const answerEncoded = btoa(JSON.stringify(data));
+                        const container = document.getElementById('answerQRContainer');
+                        if (!container) return;
+
+                        container.innerHTML = '';
+
+                        try {
+                            new QRCode(container, {
+                                text: answerEncoded,
+                                width: 280,
+                                height: 280,
+                                colorDark: '#0f172a',
+                                colorLight: '#ffffff',
+                                correctLevel: QRCode.CorrectLevel.L,
+                            });
+                        } catch (err) {
+                            showError('تعذر توليد QR', 'حدث خطأ أثناء توليد رمز الإجابة.', `${err.name}: ${err.message}`);
+                        }
                     }
                 });
 
                 state.simplePeer.on('connect', () => {
-                    console.log('✅ Manual WebRTC connected');
                     state.isConnected = true;
 
                     document.getElementById('step2').style.display = 'none';
@@ -760,7 +1175,6 @@
                     document.getElementById('step3').style.display = 'block';
                     document.getElementById('step3').classList.add('active');
 
-                    // شغّل الكاميرا تلقائياً للمسح
                     setTimeout(() => {
                         activateCamera().catch(err => {
                             console.error('Camera activation error:', err);
@@ -777,72 +1191,19 @@
 
                 state.simplePeer.on('error', (err) => {
                     console.error('SimplePeer error:', err);
-                    showError('خطأ في الاتصال: ' + err.message);
                 });
 
                 state.simplePeer.signal(decoded);
 
             } catch (e) {
                 console.error('Manual offer error:', e);
-                showError('تعذر قراءة رمز QR. جرّب مرة أخرى.');
+                showError('تعذر قراءة QR', 'تعذر قراءة رمز QR. جرّب مرة أخرى.', `${e.name}: ${e.message}`);
             }
         }
 
-        // ============================================================
-        // Camera
-        // ============================================================
-        async function activateCamera() {
-            if (state.html5QrCode) return;
-
-            state.html5QrCode = new Html5Qrcode('reader', {
-                formatsToSupport: [
-                    Html5QrcodeSupportedFormats.EAN_13,
-                    Html5QrcodeSupportedFormats.EAN_8,
-                    Html5QrcodeSupportedFormats.CODE_128,
-                    Html5QrcodeSupportedFormats.CODE_39,
-                    Html5QrcodeSupportedFormats.UPC_A,
-                    Html5QrcodeSupportedFormats.UPC_E,
-                    Html5QrcodeSupportedFormats.QR_CODE,
-                    Html5QrcodeSupportedFormats.CODE_93,
-                    Html5QrcodeSupportedFormats.ITF,
-                    Html5QrcodeSupportedFormats.CODABAR,
-                ],
-                verbose: false,
-            });
-
-            const config = {
-                fps: 15,
-                qrbox: (w, h) => {
-                    const minEdge = Math.min(w, h);
-                    const size = Math.floor(minEdge * 0.75);
-                    return { width: size, height: Math.floor(size * 0.6) };
-                },
-                aspectRatio: 1.777,
-            };
-
-            await state.html5QrCode.start(
-                { facingMode: 'environment' },
-                config,
-                onScanSuccess,
-                () => {}
-            );
-        }
-
-        async function startCamera() {
-            loadingText.textContent = 'جاري تشغيل الكاميرا...';
-            try {
-                await activateCamera();
-                loadingOverlay.classList.add('hidden');
-            } catch (err) {
-                console.error('Camera error:', err);
-                showError('تعذر فتح الكاميرا. اسمح بالوصول للكاميرا.');
-            }
-        }
-
-        function onScanSuccess(decodedText) {
-            sendBarcode(decodedText);
-        }
-
+        // ═══════════════════════════════════════════════════════════
+        // Cleanup
+        // ═══════════════════════════════════════════════════════════
         window.addEventListener('beforeunload', () => {
             try { if (state.html5QrCode) state.html5QrCode.stop(); } catch (e) {}
             try { if (state.offerScanner) state.offerScanner.stop(); } catch (e) {}
@@ -851,22 +1212,113 @@
             try { if (state.simplePeer) state.simplePeer.destroy(); } catch (e) {}
         });
 
-        window.addEventListener('load', () => {
-        // إخفاء شاشة التحميل
-        const loader = document.getElementById('initial-loader');
-        if (loader) {
-            loader.classList.add('hidden');
-            setTimeout(() => loader.remove(), 500);
+        // ═══════════════════════════════════════════════════════════
+        // اختبار الكاميرا يدوياً
+        // ═══════════════════════════════════════════════════════════
+        window.testCameraManually = async function () {
+            const loadingText = document.getElementById('loadingText');
+            if (loadingText) loadingText.textContent = 'اختبار الكاميرا...';
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'environment' },
+                    audio: false,
+                });
+                stream.getTracks().forEach(track => track.stop());
+
+                if (loadingText) loadingText.textContent = '✅ الكاميرا تعمل!';
+                updateDebugPanel();
+
+                setTimeout(() => {
+                    if (loadingText) loadingText.textContent = 'جاري التهيئة...';
+                    boot();
+                }, 1500);
+            } catch (err) {
+                console.error('Manual camera test failed:', err);
+                showError(
+                    'فشل اختبار الكاميرا',
+                    'تعذر الوصول للكاميرا.',
+                    `name: ${err.name}\nmessage: ${err.message}`
+                );
+            }
+        };
+
+        // ═══════════════════════════════════════════════════════════
+        // Safety Timeout
+        // ═══════════════════════════════════════════════════════════
+        setTimeout(() => {
+            const loader = document.getElementById('initial-loader');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const errorBox = document.getElementById('errorBox');
+
+            const loadingHidden = loadingOverlay && loadingOverlay.classList.contains('hidden');
+            const stillLoading = loader || !loadingHidden;
+
+            if (stillLoading && errorBox && errorBox.style.display !== 'flex') {
+                updateDebugPanel();
+
+                const s = window.__libStatus;
+                let detail = '';
+                if (!s.html5) detail += '❌ Html5Qrcode غير محمّلة\n';
+                if (!s.peer) detail += '❌ PeerJS غير محمّلة\n';
+                if (!navigator.onLine) detail += '❌ لا يوجد اتصال بالإنترنت\n';
+
+                showError('انتهت المهلة', 'لم تكتمل التهيئة خلال 60 ثانية.', detail || 'افحص أذونات الكاميرا');
+            }
+        }, 60000);
+
+        // ═══════════════════════════════════════════════════════════
+        // Boot
+        // ═══════════════════════════════════════════════════════════
+        function boot() {
+            updateDebugPanel();
+
+            setTimeout(() => {
+                updateDebugPanel();
+
+                const s = window.__libStatus;
+
+                if (mode === 'manual') {
+                    const missing = [];
+                    if (!s.html5) missing.push('Html5Qrcode');
+                    if (!s.simplepeer) missing.push('SimplePeer');
+                    if (!s.qrcode) missing.push('QRCode');
+
+                    if (missing.length > 0) {
+                        showError('مكتبات مفقودة', `لم تُحمّل: ${missing.join(', ')}`);
+                        return;
+                    }
+
+                    hideInitialLoader();
+                    startManualMode();
+                } else {
+                    const missing = [];
+                    if (!s.html5) missing.push('Html5Qrcode');
+                    if (!s.peer) missing.push('PeerJS');
+
+                    if (missing.length > 0) {
+                        showError('مكتبات مفقودة', `لم تُحمّل: ${missing.join(', ')}`);
+                        return;
+                    }
+
+                    if (!peerId) {
+                        showError('معرّف مفقود', 'معرّف الاتصال غير موجود في الرابط.');
+                        return;
+                    }
+
+                    hideInitialLoader();
+                    startAutoMode();
+                }
+            }, 500);
         }
-        
-        console.log('🚀 Scan page, mode:', mode);
-        
-        if (mode === 'manual') {
-            startManualMode();
+
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            setTimeout(boot, 200);
         } else {
-            startAutoMode();
+            window.addEventListener('load', () => setTimeout(boot, 200));
         }
-    });
+
+    })();
     </script>
 </body>
 </html>
