@@ -2422,6 +2422,22 @@ const app = createApp({
 
         const openPhoneScanner = async () => {
             showScannerModal.value = true;
+        
+            // ✅ إذا كان الاتصال نشطاً بالفعل، لا تعيد التهيئة
+            if (scannerMode.value === 'peerjs' && phonePeer && !phonePeer.destroyed) {
+                console.log('♻️ Reusing existing PeerJS connection');
+                scannerStatus.value = phoneConnection?.open ? 'connected' : 'online-mode';
+                loadingPhoneScanner.value = false;
+                return;
+            }
+        
+            if (scannerMode.value === 'manual' && phoneSimplePeer && !phoneSimplePeer.destroyed) {
+                console.log('♻️ Reusing existing SimplePeer connection');
+                scannerStatus.value = phoneSimplePeer.connected ? 'connected' : 'waiting-answer';
+                loadingPhoneScanner.value = false;
+                return;
+            }
+            showScannerModal.value = true;
             scannerStatus.value = 'detecting';
             scannerError.value = '';
             scannerLastCode.value = '';
@@ -2778,39 +2794,47 @@ const app = createApp({
             return true;
         };
 
+        // ✅ إخفاء المودال فقط — الاتصال يبقى نشطاً
         const closePhoneScanner = () => {
+            console.log('👁️ Hiding scanner modal (connection stays alive)');
+            showScannerModal.value = false;
+        };
+        
+        // ✅ قطع الاتصال فعلياً — يُستدعى عند الحاجة فقط
+        const destroyPhoneScanner = () => {
+            console.log('🔌 Destroying scanner connection');
+        
             try {
                 if (scannerTimeout) {
                     clearTimeout(scannerTimeout);
                     scannerTimeout = null;
                 }
-
+        
                 if (phoneConnection) {
                     try { phoneConnection.close(); } catch (e) {}
                     phoneConnection = null;
                 }
-
+        
                 if (phonePeer) {
                     try { phonePeer.destroy(); } catch (e) {}
                     phonePeer = null;
                 }
-
+        
                 if (phoneSimplePeer) {
                     try { phoneSimplePeer.destroy(); } catch (e) {}
                     phoneSimplePeer = null;
                 }
-
+        
                 stopAnswerScanner();
             } catch (e) {
                 console.warn('Cleanup error:', e);
             }
-
+        
             showScannerModal.value = false;
             scannerStatus.value = 'detecting';
             scannerQrData.value = '';
             scannerMode.value = '';
         };
-
         const loadShift = async () => {
             try {
                 const current = await getCurrentShiftForPOS();
@@ -3739,6 +3763,8 @@ const app = createApp({
             window.removeEventListener('online', handleOnline);
             window.removeEventListener('offline', handleOffline);
             document.removeEventListener('visibilitychange', handleVisibilityChange);
+            // ✅ اقطع الاتصال فقط عند إغلاق الصفحة
+            destroyPhoneScanner();
         });
 
         return {
@@ -3867,6 +3893,8 @@ const app = createApp({
             closePhoneScanner,
             startAnswerScanner,
             regeneratePeerId,
+            closePhoneScanner,      // ← إخفاء فقط
+            destroyPhoneScanner,  
         };
     }
 });
