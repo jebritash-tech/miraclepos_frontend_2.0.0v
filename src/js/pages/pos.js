@@ -171,33 +171,26 @@ function clearPersistentPeerId() {
 
 /*
 |--------------------------------------------------------------------------
-| SimplePeer Dynamic Loader — يحل مشكلة global نهائياً
+| SimplePeer Dynamic Loader
 |--------------------------------------------------------------------------
 */
 let SimplePeerModule = null;
-/*
-|--------------------------------------------------------------------------
-| SimplePeer Loader — محلي بالكامل (يعمل Offline)
-|--------------------------------------------------------------------------
-*/
 let SimplePeerConstructor = null;
 
 async function loadSimplePeer() {
     if (SimplePeerConstructor) return SimplePeerConstructor;
 
-    // 1. إذا كان من السكريبت المحلي في HTML
     if (typeof window.SimplePeer === 'function') {
         SimplePeerConstructor = window.SimplePeer;
         console.log('✅ SimplePeer ready (from local script)');
         return SimplePeerConstructor;
     }
 
-    // 2. انتظر تحميل السكريبت (حتى 5 ثوانٍ)
     console.log('⏳ Waiting for SimplePeer from local script...');
 
     const found = await new Promise((resolve) => {
         let attempts = 0;
-        const maxAttempts = 50; // 50 × 100ms = 5s
+        const maxAttempts = 50;
 
         const interval = setInterval(() => {
             attempts++;
@@ -221,12 +214,11 @@ async function loadSimplePeer() {
         return SimplePeerConstructor;
     }
 
-    // 3. حل أخير: تحميل من المسار المحلي (إذا لم يُحمّل السكريبت)
     console.log('⚠️ SimplePeer not found — trying local file...');
 
     return new Promise((resolve, reject) => {
         const script = document.createElement('script');
-        script.src = '/simplepeer.min.js'; // ✅ مسار محلي
+        script.src = '/simplepeer.min.js';
         script.async = true;
 
         const timeout = setTimeout(() => {
@@ -254,6 +246,7 @@ async function loadSimplePeer() {
         document.head.appendChild(script);
     });
 }
+
 const app = createApp({
 
     template: `
@@ -262,7 +255,6 @@ const app = createApp({
          ═══════════════════════════════════════════════════════════ -->
     <nav class="bg-gradient-to-r from-slate-800 to-blue-800 text-white shadow-xl px-3 sm:px-4 md:px-6 py-2 md:py-3 sticky top-0 z-40">
         <div class="flex items-center justify-between gap-2 md:gap-4 flex-wrap">
-            <!-- الشعار -->
             <div class="flex items-center gap-2 md:gap-3 flex-shrink-0">
                 <div class="w-9 h-9 md:w-11 md:h-11 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center overflow-hidden">
                     <img v-if="pharmacySettings['pharmacy.logo_url'] && !logoFailed" :src="pharmacySettings['pharmacy.logo_url']" @error="logoFailed = true" alt="شعار الصيدلية" class="w-full h-full object-contain" />
@@ -273,7 +265,6 @@ const app = createApp({
                 </div>
             </div>
 
-            <!-- إحصائيات الوردية -->
             <div class="flex items-center gap-1.5 sm:gap-2 md:gap-3 flex-1 justify-center flex-wrap order-3 md:order-2 w-full md:w-auto">
                 <div class="bg-white/10 backdrop-blur-sm rounded-xl md:rounded-2xl px-2 sm:px-3 md:px-4 py-1 md:py-2 text-center min-w-[80px] sm:min-w-[100px] border border-white/20">
                     <div class="text-[9px] md:text-[10px] text-blue-200">💵 الدرج</div>
@@ -299,7 +290,6 @@ const app = createApp({
                 </div>
             </div>
 
-            <!-- الأزرار -->
             <div class="flex items-center gap-1.5 md:gap-3 flex-shrink-0 order-2 md:order-3">
                 <div class="relative">
                     <button @click="showFinanceMenu=!showFinanceMenu" class="bg-yellow-400 hover:bg-yellow-500 text-gray-800 font-bold px-2.5 sm:px-3 md:px-4 py-2 md:py-2.5 rounded-xl shadow-lg transition flex items-center gap-1 md:gap-2 text-xs sm:text-sm md:text-base">
@@ -307,12 +297,10 @@ const app = createApp({
                         <span class="hidden sm:inline">مالية</span>
                     </button>
 
-                    <!-- Overlay لإغلاق القائمة عند النقر خارجها (للموبايل) -->
                     <div v-if="showFinanceMenu" 
                         @click="showFinanceMenu=false" 
                         class="fixed inset-0 z-40 md:hidden"></div>
 
-                    <!-- القائمة المنسدلة -->
                     <transition
                         enter-active-class="transition ease-out duration-200"
                         enter-from-class="opacity-0 scale-95"
@@ -327,7 +315,6 @@ const app = createApp({
                                     left-0 md:left-0
                                     max-w-[calc(100vw-1rem)] md:max-w-none">
                             
-                            <!-- Header للموبايل -->
                             <div class="md:hidden px-4 py-2.5 bg-gradient-to-l from-yellow-50 to-amber-50 border-b border-amber-200 flex items-center justify-between">
                                 <span class="font-bold text-amber-800 text-sm flex items-center gap-2">
                                     <i class="fas fa-coins text-amber-600"></i>
@@ -386,7 +373,6 @@ const app = createApp({
         </div>
     </nav>
 
-    <!-- شريط تقدم المزامنة -->
     <div v-if="syncProgress.active" class="bg-blue-50 border-b-2 border-blue-300 shadow-sm px-3 md:px-6 py-2 md:py-3">
         <div class="flex items-center gap-2 md:gap-3">
             <i class="fas fa-sync-alt fa-spin text-blue-600 text-base md:text-xl"></i>
@@ -410,9 +396,6 @@ const app = createApp({
         <i class="fas fa-wifi-slash"></i> النظام يعمل حالياً بدون اتصال بالإنترنت
     </div>
 
-    <!-- ═══════════════════════════════════════════════════════════
-         شريط التبويبات (للموبايل والتابلت فقط)
-         ═══════════════════════════════════════════════════════════ -->
     <div class="lg:hidden sticky top-[56px] md:top-[68px] z-30 bg-white border-b-2 border-slate-200 shadow-sm">
         <div class="flex">
             <button 
@@ -448,12 +431,8 @@ const app = createApp({
         </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════════════════════
-         المحتوى الرئيسي
-         ═══════════════════════════════════════════════════════════ -->
     <div class="flex-1 overflow-hidden p-2 sm:p-3 md:p-4 lg:p-6 bg-slate-100">
         
-        <!-- تخطيط الكمبيوتر: 3 أعمدة -->
         <div class="hidden lg:flex gap-6 h-[calc(100vh-180px)]">
 
             <aside class="w-1/5 min-w-[200px] bg-white rounded-2xl shadow-lg border border-slate-200 p-4 overflow-y-auto">
@@ -526,9 +505,10 @@ const app = createApp({
                             </div>
                         </div>
                     </div>
+                    <!-- ✅ زر مسح بالهاتف (للتابلت والكمبيوتر فقط) -->
                     <button
                         @click="openPhoneScanner"
-                        class="bg-gradient-to-br from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white rounded-2xl px-5 shadow-lg transition-all hover:scale-105 flex items-center gap-2 font-bold flex-shrink-0 self-stretch"
+                        class="hidden lg:flex bg-gradient-to-br from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white rounded-2xl px-5 shadow-lg transition-all hover:scale-105 items-center gap-2 font-bold flex-shrink-0 self-stretch"
                         title="استخدم هاتفك كجهاز باركود"
                     >
                         <i class="fas fa-mobile-alt text-2xl"></i>
@@ -694,12 +674,13 @@ const app = createApp({
                             class="w-full p-3.5 pr-10 rounded-2xl border-2 border-blue-300 shadow-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none text-center text-base bg-white transition"
                         >
                     </div>
+                    <!-- ✅ زر الماسح المحلي — يظهر على الموبايل فقط -->
                     <button
-                        @click="openPhoneScanner"
-                        class="bg-gradient-to-br from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white rounded-2xl px-3 sm:px-4 shadow-lg transition flex items-center gap-2 font-bold flex-shrink-0 self-stretch"
-                        title="مسح بالهاتف"
+                        @click="openLocalScanner"
+                        class="lg:hidden bg-gradient-to-br from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-2xl px-3 sm:px-4 shadow-lg transition flex items-center gap-2 font-bold flex-shrink-0 self-stretch"
+                        title="امسح بالكاميرا مباشرة"
                     >
-                        <i class="fas fa-mobile-alt text-xl sm:text-2xl"></i>
+                        <i class="fas fa-camera text-xl sm:text-2xl"></i>
                     </button>
                 </div>
 
@@ -740,7 +721,7 @@ const app = createApp({
                         <div class="text-center text-slate-400 py-12">
                             <i class="fas fa-prescription text-5xl sm:text-6xl text-blue-200 mb-3"></i>
                             <p class="text-sm sm:text-base">ابحث عن دواء وأضفه إلى الفاتورة</p>
-                            <p class="text-[10px] sm:text-xs mt-2 text-slate-300">أو استخدم زر "مسح بالهاتف"</p>
+                            <p class="text-[10px] sm:text-xs mt-2 text-slate-300">أو استخدم زر "الكاميرا" 📷</p>
                         </div>
                     </template>
                 </div>
@@ -854,7 +835,6 @@ const app = createApp({
         </div>
     </div>
 
-    <!-- زر السلة العائم -->
     <button 
         v-if="cart.length > 0 && activeTab !== 'cart'"
         @click="activeTab='cart'"
@@ -870,8 +850,78 @@ const app = createApp({
     </button>
 
     <!-- ═══════════════════════════════════════════════════════════
-         المودالات
+         ✅ مودال الماسح المحلي — كاميرا نفس الجهاز
          ═══════════════════════════════════════════════════════════ -->
+    <div v-if="showLocalScanner"
+         class="fixed inset-0 bg-black z-[99999] flex flex-col">
+
+        <!-- شريط علوي -->
+        <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-3 flex items-center justify-between text-white flex-shrink-0">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-camera text-lg"></i>
+                <span class="font-bold">امسح الباركود</span>
+            </div>
+            <button
+                @click="closeLocalScanner"
+                class="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition"
+            >
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- خطأ -->
+        <div v-if="localScannerError"
+             class="bg-red-50 border-b-2 border-red-300 p-3 text-red-700 text-sm flex items-start gap-2 flex-shrink-0">
+            <i class="fas fa-exclamation-triangle mt-0.5"></i>
+            <div>
+                <div class="font-bold">تعذر فتح الكاميرا</div>
+                <div class="text-xs mt-1">{{ localScannerError }}</div>
+            </div>
+        </div>
+
+        <!-- منطقة الكاميرا -->
+        <div class="flex-1 relative bg-black overflow-hidden">
+            <div id="local-reader" class="w-full h-full"></div>
+
+            <!-- إطار المسح -->
+            <div class="absolute inset-0 pointer-events-none flex items-center justify-center z-10">
+                <div class="relative" style="width: 75%; max-width: 320px; aspect-ratio: 1.5;">
+                    <div class="absolute top-0 right-0 w-10 h-10 border-t-4 border-r-4 border-emerald-400 rounded-tr-2xl"></div>
+                    <div class="absolute top-0 left-0 w-10 h-10 border-t-4 border-l-4 border-emerald-400 rounded-tl-2xl"></div>
+                    <div class="absolute bottom-0 right-0 w-10 h-10 border-b-4 border-r-4 border-emerald-400 rounded-br-2xl"></div>
+                    <div class="absolute bottom-0 left-0 w-10 h-10 border-b-4 border-l-4 border-emerald-400 rounded-bl-2xl"></div>
+                    <div class="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-emerald-400 to-transparent"
+                         style="animation: localScan 2s ease-in-out infinite; box-shadow: 0 0 20px 4px rgba(16, 185, 129, 0.6);"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- شريط سفلي -->
+        <div class="bg-slate-900 text-white p-4 flex items-center justify-between flex-shrink-0">
+            <div class="text-xs text-slate-400">
+                <i class="fas fa-info-circle"></i>
+                وجّه الكاميرا نحو الباركود
+            </div>
+            <button
+                @click="closeLocalScanner"
+                class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-xl text-sm font-bold transition"
+            >
+                إغلاق
+            </button>
+        </div>
+
+        <style>
+            @keyframes localScan {
+                0%, 100% { top: 5%; opacity: 0.5; }
+                50% { top: 95%; opacity: 1; }
+            }
+            #local-reader video {
+                object-fit: cover !important;
+                width: 100% !important;
+                height: 100% !important;
+            }
+        </style>
+    </div>
 
     <!-- مودال اختيار الدفعة -->
     <div v-if="showBatchSelector" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[99998] flex items-center justify-center p-3 sm:p-4">
@@ -1346,13 +1396,11 @@ const app = createApp({
                         امسح هذا الرمز بكاميرا الهاتف
                     </p>
 
-                    <!-- ✅ الحالة 1: QR جاهز -->
                     <div v-if="scannerQrData" 
                         class="bg-white rounded-xl p-2 sm:p-3 inline-block border-2 border-orange-300">
                         <img :src="scannerQrData" alt="Offer QR" class="w-56 sm:w-72 h-56 sm:h-72 mx-auto">
                     </div>
 
-                    <!-- ✅ الحالة 2: QR لم يُولّد بعد — رسالة انتظار -->
                     <div v-else class="bg-white rounded-xl p-8 inline-block border-2 border-orange-300 min-w-[240px]">
                         <div class="text-center">
                             <div class="w-10 h-10 mx-auto border-4 border-orange-200 border-t-orange-600 rounded-full animate-spin mb-3"></div>
@@ -1420,6 +1468,14 @@ const app = createApp({
                 class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 sm:py-3 rounded-xl font-bold transition flex items-center justify-center gap-2 mt-2 text-sm sm:text-base">
                 <i class="fas fa-times"></i> إغلاق
             </button>
+
+            <!-- ✅ زر قطع الاتصال (يظهر فقط عند الاتصال) -->
+            <button 
+                v-if="scannerMode && scannerStatus === 'connected'"
+                @click="destroyPhoneScanner"
+                class="w-full bg-red-50 hover:bg-red-100 text-red-600 py-2 rounded-xl font-bold text-xs mt-2 flex items-center justify-center gap-1">
+                <i class="fas fa-unlink"></i> قطع الاتصال بالهاتف
+            </button>
         </div>
     </div>
 
@@ -1456,7 +1512,6 @@ const app = createApp({
         const logoFailed = ref(false);
         const token = localStorage.getItem('token');
 
-        // Responsive: تبويب نشط للموبايل والتابلت
         const activeTab = ref('search');
 
         axios.defaults.headers.common['Accept'] = 'application/json';
@@ -1549,6 +1604,11 @@ const app = createApp({
         const scannerScanCount = ref(0);
         const scannerMode = ref('');
         const scannerManualStep = ref(1);
+
+        // ✅ ماسح الباركود المحلي (للموبايل)
+        const showLocalScanner = ref(false);
+        const localScannerError = ref('');
+        let localHtml5QrCode = null;
 
         let phonePeer = null;
         let phoneConnection = null;
@@ -2378,7 +2438,159 @@ const app = createApp({
             return Number(s.expected_cash || 0);
         });
 
-        // Phone Scanner
+        // ═══════════════════════════════════════════════════════════
+        // ✅ الماسح المحلي — يستخدم كاميرا نفس الجهاز
+        // ═══════════════════════════════════════════════════════════
+
+        const openLocalScanner = async () => {
+            console.log('📷 Opening local scanner...');
+
+            showLocalScanner.value = true;
+            localScannerError.value = '';
+
+            // انتظر حتى يظهر الـ DOM
+            await nextTick();
+
+            // تأكد من عدم وجود ماسح قديم
+            if (localHtml5QrCode) {
+                try { await localHtml5QrCode.stop(); } catch (e) {}
+                localHtml5QrCode = null;
+            }
+
+            const readerEl = document.getElementById('local-reader');
+            if (!readerEl) {
+                localScannerError.value = 'عنصر الماسح غير موجود';
+                return;
+            }
+
+            // امسح أي محتوى قديم
+            readerEl.innerHTML = '';
+
+            try {
+                localHtml5QrCode = new Html5Qrcode('local-reader', {
+                    formatsToSupport: [
+                        Html5QrcodeSupportedFormats.EAN_13,
+                        Html5QrcodeSupportedFormats.EAN_8,
+                        Html5QrcodeSupportedFormats.CODE_128,
+                        Html5QrcodeSupportedFormats.CODE_39,
+                        Html5QrcodeSupportedFormats.UPC_A,
+                        Html5QrcodeSupportedFormats.UPC_E,
+                        Html5QrcodeSupportedFormats.QR_CODE,
+                        Html5QrcodeSupportedFormats.CODE_93,
+                        Html5QrcodeSupportedFormats.ITF,
+                        Html5QrcodeSupportedFormats.CODABAR,
+                    ],
+                    verbose: false,
+                    experimentalFeatures: {
+                        useBarCodeDetectorIfSupported: true,
+                    },
+                });
+
+                const config = {
+                    fps: 15,
+                    qrbox: (w, h) => {
+                        const minEdge = Math.min(w, h);
+                        const size = Math.floor(minEdge * 0.7);
+                        return { width: size, height: size };
+                    },
+                    aspectRatio: 1.0,
+                    disableFlip: false,
+                    videoConstraints: {
+                        facingMode: { ideal: 'environment' },
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 },
+                    },
+                };
+
+                await localHtml5QrCode.start(
+                    { facingMode: 'environment' },
+                    config,
+                    onLocalScanSuccess,
+                    () => {} // تجاهل الأخطاء العابرة
+                );
+
+                console.log('✅ Local scanner started');
+
+            } catch (err) {
+                console.error('❌ Local scanner error:', err);
+
+                let msg = 'تعذر فتح الكاميرا';
+                if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                    msg = 'يجب السماح بالوصول للكاميرا من إعدادات المتصفح';
+                } else if (err.name === 'NotFoundError') {
+                    msg = 'لا توجد كاميرا على هذا الجهاز';
+                } else if (err.name === 'NotReadableError') {
+                    msg = 'الكاميرا مستخدمة من تطبيق آخر';
+                } else {
+                    msg = err.message || 'خطأ غير معروف';
+                }
+
+                localScannerError.value = msg;
+            }
+        };
+
+        const onLocalScanSuccess = (decodedText) => {
+            const code = String(decodedText || '').trim();
+            if (!code) return;
+
+            console.log('📷 Local scan:', code);
+
+            // ابحث عن الدواء
+            const medicine = findMedicineByBarcode(code);
+
+            if (!medicine) {
+                playSound('error');
+                if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+                // لا نُغلق الماسح — نستمر بالمحاولة
+                showAlert(`❌ باركود غير معروف: ${code}`, 'error');
+                return;
+            }
+
+            // ✅ أضف للسلة
+            const batch = medicine.batches?.[0];
+            const priceRecord = batch?.prices?.[0];
+
+            if (!batch || !priceRecord) {
+                playSound('error');
+                showAlert('الدواء غير متوفر', 'error');
+                return;
+            }
+
+            // استخدم نفس منطق addToCart
+            if (batch.prices && batch.prices.length > 1) {
+                // هناك عدة أسعار — أغلق الماسح واعرض اختيار الدفعة
+                closeLocalScanner();
+                addToCart(medicine, priceRecord);
+            } else {
+                proceedAddToCart(medicine, priceRecord, batch);
+
+                // ✅ نجاح
+                playSound('cart');
+                if (navigator.vibrate) navigator.vibrate(80);
+
+                // إشعار نجاح
+                showAlert(`✅ تم إضافة: ${medicine.name}`, 'success');
+            }
+        };
+
+        const closeLocalScanner = async () => {
+            console.log('📷 Closing local scanner...');
+
+            if (localHtml5QrCode) {
+                try {
+                    await localHtml5QrCode.stop();
+                    localHtml5QrCode.clear();
+                } catch (e) {
+                    console.warn('Stop error:', e);
+                }
+                localHtml5QrCode = null;
+            }
+
+            showLocalScanner.value = false;
+            localScannerError.value = '';
+        };
+
+        // Phone Scanner (remote)
         const testPeerJSCloud = () => {
             return new Promise((resolve) => {
                 if (!navigator.onLine) {
@@ -2391,7 +2603,7 @@ const app = createApp({
                 
                 let resolved = false;
 
-                const testPeer = new Peer({ debug: 2 });  // ← debug للتشخيص
+                const testPeer = new Peer({ debug: 2 });
 
                 const finish = (result) => {
                     if (resolved) return;
@@ -2404,7 +2616,7 @@ const app = createApp({
                 const timeout = setTimeout(() => {
                     console.warn('⏰ testPeerJSCloud: Timeout بعد 8 ثوان');
                     finish(false);
-                }, 8000);  // ← زدنا من 4 إلى 8
+                }, 8000);
 
                 testPeer.on('open', (id) => {
                     console.log('✅ PeerJS Cloud يعمل، ID:', id);
@@ -2448,9 +2660,6 @@ const app = createApp({
             loadingPhoneScanner.value = true;
 
             try {
-                // ═══════════════════════════════════════════════════
-                // ✅ فحص سريع: إذا كان Offline، اذهب مباشرة للوضع اليدوي
-                // ═══════════════════════════════════════════════════
                 if (!navigator.onLine) {
                     console.log('📴 Offline detected — using Manual mode');
 
@@ -2466,9 +2675,6 @@ const app = createApp({
                     return;
                 }
 
-                // ═══════════════════════════════════════════════════
-                // Online: جرّب PeerJS Cloud مع timeout قصير
-                // ═══════════════════════════════════════════════════
                 console.log('🌐 Online — testing PeerJS Cloud...');
 
                 const hasCloud = await Promise.race([
@@ -2484,7 +2690,6 @@ const app = createApp({
                 } else {
                     console.warn('⚠️ PeerJS Cloud unavailable — falling back to Manual mode');
                     
-                    // ✅ أظهر للمستخدم سبباً واضحاً
                     showAlert(
                         'تعذر الاتصال بـ PeerJS Cloud. سيتم استخدام الوضع اليدوي.',
                         'warning'
@@ -2515,7 +2720,6 @@ const app = createApp({
         const startPeerJSScanner = async () => {
             const myPeerId = getOrCreatePersistentPeerId();
             
-            // ✅ استخدام BASE_URL من Vite (يدعم GitHub Pages)
             const base = import.meta.env.BASE_URL || '/';
             const scanUrl = `${window.location.origin}${base}scan.html?mode=auto&peer=${encodeURIComponent(myPeerId)}`;
             
@@ -2563,6 +2767,15 @@ const app = createApp({
 
                             const success = handleScannedBarcode(code);
                             playSound(success ? 'cart' : 'error');
+
+                            // ✅ إذا كان المودال مغلقاً، أظهر إشعاراً
+                            if (!showScannerModal.value) {
+                                if (success) {
+                                    showAlert(`✅ تم مسح: ${code}`, 'success');
+                                } else {
+                                    showAlert(`❌ باركود غير معروف: ${code}`, 'error');
+                                }
+                            }
                         }
                     });
 
@@ -2619,7 +2832,6 @@ const app = createApp({
             scannerStatus.value = 'offline-mode';
 
             try {
-                // ✅ استخدم الـ Loader الجديد
                 const SimplePeer = await loadSimplePeer();
 
                 if (typeof SimplePeer !== 'function') {
@@ -2680,13 +2892,21 @@ const app = createApp({
 
                             const success = handleScannedBarcode(msg.code);
                             playSound(success ? 'cart' : 'error');
+
+                            // ✅ إشعار عند المودال مغلق
+                            if (!showScannerModal.value) {
+                                if (success) {
+                                    showAlert(`✅ تم مسح: ${msg.code}`, 'success');
+                                } else {
+                                    showAlert(`❌ باركود غير معروف: ${msg.code}`, 'error');
+                                }
+                            }
                         }
                     } catch (e) {}
                 });
 
                 phoneSimplePeer.on('error', (err) => {
                     console.error('SimplePeer error:', err);
-                    // لا نظهر خطأ هنا — قد تكون مشاكل شبكة عادية
                 });
 
                 scannerManualStep.value = 1;
@@ -2694,7 +2914,6 @@ const app = createApp({
             } catch (error) {
                 console.error('Failed to init manual scanner:', error);
 
-                // ✅ رسالة خطأ واضحة للمستخدم
                 let userMessage = 'تعذر تشغيل الاتصال اليدوي';
 
                 if (error.message?.includes('غير محمّلة') || error.message?.includes('CDN')) {
@@ -2835,6 +3054,7 @@ const app = createApp({
             scannerQrData.value = '';
             scannerMode.value = '';
         };
+
         const loadShift = async () => {
             try {
                 const current = await getCurrentShiftForPOS();
@@ -3694,6 +3914,12 @@ const app = createApp({
         };
 
         const logout = () => {
+            // ✅ نظّف الماسح المحلي
+            if (localHtml5QrCode) {
+                try { localHtml5QrCode.stop(); } catch (e) {}
+                localHtml5QrCode = null;
+            }
+
             localStorage.removeItem('token');
             localStorage.removeItem('offline_mode');
             if (axios.defaults.headers?.common) {
@@ -3763,8 +3989,13 @@ const app = createApp({
             window.removeEventListener('online', handleOnline);
             window.removeEventListener('offline', handleOffline);
             document.removeEventListener('visibilitychange', handleVisibilityChange);
-            // ✅ اقطع الاتصال فقط عند إغلاق الصفحة
+            // ✅ اقطع اتصال الماسح البعيد
             destroyPhoneScanner();
+            // ✅ نظّف الماسح المحلي
+            if (localHtml5QrCode) {
+                try { localHtml5QrCode.stop(); } catch (e) {}
+                localHtml5QrCode = null;
+            }
         });
 
         return {
@@ -3879,7 +4110,7 @@ const app = createApp({
             // Responsive
             activeTab,
 
-            // Phone Scanner
+            // Phone Scanner (Remote)
             showScannerModal,
             scannerQrData,
             scannerStatus,
@@ -3893,8 +4124,13 @@ const app = createApp({
             closePhoneScanner,
             startAnswerScanner,
             regeneratePeerId,
-            closePhoneScanner,      // ← إخفاء فقط
-            destroyPhoneScanner,  
+            destroyPhoneScanner,
+
+            // ✅ Local Scanner (Mobile)
+            showLocalScanner,
+            localScannerError,
+            openLocalScanner,
+            closeLocalScanner,
         };
     }
 });
