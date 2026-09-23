@@ -1,5 +1,5 @@
 {
-    "name": "MiraclePOS — نظام إدارة الصيدليات",
+    "name": "MiraclePOS — سندس نظام إدارة الصيدليات",
     "short_name": "MiraclePOS",
     "description": "نظام متكامل لإدارة الصيدليات: نقطة البيع، المخزون، التقارير",
 
@@ -18,7 +18,9 @@
     "lang": "ar",
 
     "dir": "rtl",
-
+    "permissions": [
+        "camera"
+    ],
     "icons": [
         {
             "src": "./icons/icon-192.png",
