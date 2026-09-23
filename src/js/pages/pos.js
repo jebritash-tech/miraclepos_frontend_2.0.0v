@@ -297,36 +297,22 @@ const app = createApp({
                         <span class="hidden sm:inline">مالية</span>
                     </button>
 
-                    <div v-if="showFinanceMenu" 
-                        @click="showFinanceMenu=false" 
-                        class="fixed inset-0 z-40 md:hidden"></div>
-
+                    <!-- ═══════════════════════════════════════════════════════
+                         ✅ قائمة المالية — للكمبيوتر فقط (dropdown عادي)
+                         ═══════════════════════════════════════════════════════ -->
                     <transition
-                        enter-active-class="transition ease-out duration-200"
+                        enter-active-class="transition ease-out duration-200 hidden md:block"
                         enter-from-class="opacity-0 scale-95"
                         enter-to-class="opacity-100 scale-100"
-                        leave-active-class="transition ease-in duration-150"
+                        leave-active-class="transition ease-in duration-150 hidden md:block"
                         leave-from-class="opacity-100 scale-100"
                         leave-to-class="opacity-0 scale-95"
                     >
                         <div v-if="showFinanceMenu" 
-                            class="absolute mt-2 bg-white rounded-xl shadow-2xl overflow-hidden z-50 border border-gray-200
-                                    w-64
-                                    left-0 md:left-0
-                                    max-w-[calc(100vw-1rem)] md:max-w-none">
+                            class="hidden md:block absolute mt-2 bg-white rounded-xl shadow-2xl overflow-hidden z-50 border border-gray-200 w-64 left-0">
                             
-                            <div class="md:hidden px-4 py-2.5 bg-gradient-to-l from-yellow-50 to-amber-50 border-b border-amber-200 flex items-center justify-between">
-                                <span class="font-bold text-amber-800 text-sm flex items-center gap-2">
-                                    <i class="fas fa-coins text-amber-600"></i>
-                                    العمليات المالية
-                                </span>
-                                <button @click="showFinanceMenu=false" class="text-slate-400 hover:text-slate-600 p-1">
-                                    <i class="fas fa-times text-sm"></i>
-                                </button>
-                            </div>
-
                             <button @click="showFinanceMenu=false;openExpenseModal()" 
-                                    class="w-full text-right px-4 py-3 hover:bg-blue-50 text-gray-700 flex items-center gap-3 text-sm md:text-base transition-colors">
+                                    class="w-full text-right px-4 py-3 hover:bg-blue-50 text-gray-700 flex items-center gap-3 text-base transition-colors">
                                 <div class="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center flex-shrink-0">
                                     <i class="fas fa-receipt text-red-500 text-sm"></i>
                                 </div>
@@ -334,7 +320,7 @@ const app = createApp({
                             </button>
                             
                             <button @click="showFinanceMenu=false;openWithdrawModal()" 
-                                    class="w-full text-right px-4 py-3 hover:bg-blue-50 text-gray-700 flex items-center gap-3 text-sm md:text-base transition-colors">
+                                    class="w-full text-right px-4 py-3 hover:bg-blue-50 text-gray-700 flex items-center gap-3 text-base transition-colors">
                                 <div class="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center flex-shrink-0">
                                     <i class="fas fa-hand-holding-usd text-orange-500 text-sm"></i>
                                 </div>
@@ -342,7 +328,7 @@ const app = createApp({
                             </button>
                             
                             <button @click="showFinanceMenu=false;openDebtPaymentModal()" 
-                                    class="w-full text-right px-4 py-3 hover:bg-blue-50 text-gray-700 flex items-center gap-3 text-sm md:text-base transition-colors">
+                                    class="w-full text-right px-4 py-3 hover:bg-blue-50 text-gray-700 flex items-center gap-3 text-base transition-colors">
                                 <div class="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0">
                                     <i class="fas fa-hand-holding-heart text-green-500 text-sm"></i>
                                 </div>
@@ -352,7 +338,7 @@ const app = createApp({
                             <hr class="border-slate-100">
                             
                             <button @click="showFinanceMenu=false;loadShift()" 
-                                    class="w-full text-right px-4 py-3 bg-red-50 hover:bg-red-100 text-red-600 font-bold flex items-center gap-3 text-sm md:text-base transition-colors">
+                                    class="w-full text-right px-4 py-3 bg-red-50 hover:bg-red-100 text-red-600 font-bold flex items-center gap-3 text-base transition-colors">
                                 <div class="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center flex-shrink-0">
                                     <i class="fas fa-door-closed text-red-600 text-sm"></i>
                                 </div>
@@ -372,6 +358,112 @@ const app = createApp({
             </div>
         </div>
     </nav>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         ✅ قائمة المالية — Bottom Sheet للموبايل
+         ═══════════════════════════════════════════════════════════ -->
+    <transition
+        enter-active-class="transition-opacity ease-out duration-200"
+        enter-from-class="opacity-0"
+        enter-to-class="opacity-100"
+        leave-active-class="transition-opacity ease-in duration-150"
+        leave-from-class="opacity-100"
+        leave-to-class="opacity-0"
+    >
+        <div v-if="showFinanceMenu" 
+             class="md:hidden fixed inset-0 bg-black/50 z-[60]"
+             @click="showFinanceMenu=false">
+        </div>
+    </transition>
+
+    <transition
+        enter-active-class="transition-transform ease-out duration-250"
+        enter-from-class="translate-y-full"
+        enter-to-class="translate-y-0"
+        leave-active-class="transition-transform ease-in duration-200"
+        leave-from-class="translate-y-0"
+        leave-to-class="translate-y-full"
+    >
+        <div v-if="showFinanceMenu" 
+             class="md:hidden fixed bottom-0 left-0 right-0 z-[61] bg-white rounded-t-3xl shadow-2xl max-h-[85vh] overflow-hidden flex flex-col">
+            
+            <!-- Handle bar -->
+            <div class="flex justify-center pt-3 pb-1 flex-shrink-0">
+                <div class="w-12 h-1.5 bg-slate-300 rounded-full"></div>
+            </div>
+
+            <!-- Header -->
+            <div class="px-5 py-3 border-b border-slate-200 flex items-center justify-between flex-shrink-0">
+                <div class="flex items-center gap-2">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center">
+                        <i class="fas fa-coins text-white text-sm"></i>
+                    </div>
+                    <div>
+                        <div class="font-bold text-slate-800 text-base">العمليات المالية</div>
+                        <div class="text-[10px] text-slate-500">اختر العملية المطلوبة</div>
+                    </div>
+                </div>
+                <button @click="showFinanceMenu=false" 
+                        class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Items -->
+            <div class="flex-1 overflow-y-auto p-3 space-y-2">
+                <button @click="showFinanceMenu=false;openExpenseModal()" 
+                        class="w-full text-right p-4 rounded-2xl bg-gradient-to-l from-red-50 to-rose-50 hover:from-red-100 hover:to-rose-100 border border-red-100 flex items-center gap-3 transition-all active:scale-[0.98]">
+                    <div class="w-11 h-11 rounded-xl bg-white flex items-center justify-center flex-shrink-0 shadow-sm">
+                        <i class="fas fa-receipt text-red-500 text-lg"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-bold text-slate-800 text-sm">إضافة مصروف</div>
+                        <div class="text-[11px] text-slate-500 mt-0.5">تسجيل مصروف من الدرج</div>
+                    </div>
+                    <i class="fas fa-chevron-left text-slate-300"></i>
+                </button>
+
+                <button @click="showFinanceMenu=false;openWithdrawModal()" 
+                        class="w-full text-right p-4 rounded-2xl bg-gradient-to-l from-orange-50 to-amber-50 hover:from-orange-100 hover:to-amber-100 border border-orange-100 flex items-center gap-3 transition-all active:scale-[0.98]">
+                    <div class="w-11 h-11 rounded-xl bg-white flex items-center justify-center flex-shrink-0 shadow-sm">
+                        <i class="fas fa-hand-holding-usd text-orange-500 text-lg"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-bold text-slate-800 text-sm">سحب نقدي</div>
+                        <div class="text-[11px] text-slate-500 mt-0.5">سحب من الصندوق</div>
+                    </div>
+                    <i class="fas fa-chevron-left text-slate-300"></i>
+                </button>
+
+                <button @click="showFinanceMenu=false;openDebtPaymentModal()" 
+                        class="w-full text-right p-4 rounded-2xl bg-gradient-to-l from-emerald-50 to-green-50 hover:from-emerald-100 hover:to-green-100 border border-emerald-100 flex items-center gap-3 transition-all active:scale-[0.98]">
+                    <div class="w-11 h-11 rounded-xl bg-white flex items-center justify-center flex-shrink-0 shadow-sm">
+                        <i class="fas fa-hand-holding-heart text-emerald-500 text-lg"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-bold text-slate-800 text-sm">سداد دين</div>
+                        <div class="text-[11px] text-slate-500 mt-0.5">تحصيل دفعة من دين</div>
+                    </div>
+                    <i class="fas fa-chevron-left text-slate-300"></i>
+                </button>
+
+                <button @click="showFinanceMenu=false;loadShift()" 
+                        class="w-full text-right p-4 rounded-2xl bg-gradient-to-l from-slate-100 to-red-50 hover:from-red-100 hover:to-rose-100 border border-red-200 flex items-center gap-3 transition-all active:scale-[0.98] mt-4">
+                    <div class="w-11 h-11 rounded-xl bg-white flex items-center justify-center flex-shrink-0 shadow-sm">
+                        <i class="fas fa-door-closed text-red-600 text-lg"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-bold text-red-700 text-sm">إنهاء الوردية</div>
+                        <div class="text-[11px] text-red-500 mt-0.5">إغلاق الوردية الحالية</div>
+                    </div>
+                    <i class="fas fa-chevron-left text-red-300"></i>
+                </button>
+            </div>
+
+            <!-- Safe area للإيماءات -->
+            <div class="h-4 flex-shrink-0"></div>
+        </div>
+    </transition>
 
     <div v-if="syncProgress.active" class="bg-blue-50 border-b-2 border-blue-300 shadow-sm px-3 md:px-6 py-2 md:py-3">
         <div class="flex items-center gap-2 md:gap-3">
@@ -505,7 +597,6 @@ const app = createApp({
                             </div>
                         </div>
                     </div>
-                    <!-- ✅ زر مسح بالهاتف (للتابلت والكمبيوتر فقط) -->
                     <button
                         @click="openPhoneScanner"
                         class="hidden lg:flex bg-gradient-to-br from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white rounded-2xl px-5 shadow-lg transition-all hover:scale-105 items-center gap-2 font-bold flex-shrink-0 self-stretch"
@@ -674,7 +765,6 @@ const app = createApp({
                             class="w-full p-3.5 pr-10 rounded-2xl border-2 border-blue-300 shadow-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none text-center text-base bg-white transition"
                         >
                     </div>
-                    <!-- ✅ زر الماسح المحلي — يظهر على الموبايل فقط -->
                     <button
                         @click="openLocalScanner"
                         class="lg:hidden bg-gradient-to-br from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-2xl px-3 sm:px-4 shadow-lg transition flex items-center gap-2 font-bold flex-shrink-0 self-stretch"
@@ -850,26 +940,40 @@ const app = createApp({
     </button>
 
     <!-- ═══════════════════════════════════════════════════════════
-         ✅ مودال الماسح المحلي — كاميرا نفس الجهاز
+         ✅ مودال الماسح المحلي
          ═══════════════════════════════════════════════════════════ -->
     <div v-if="showLocalScanner"
          class="fixed inset-0 bg-black z-[99999] flex flex-col">
 
-        <!-- شريط علوي -->
         <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-3 flex items-center justify-between text-white flex-shrink-0">
             <div class="flex items-center gap-2">
                 <i class="fas fa-camera text-lg"></i>
                 <span class="font-bold">امسح الباركود</span>
+                <span v-if="localScannerEngine" 
+                      class="text-[10px] px-2 py-0.5 rounded-full font-bold"
+                      :class="localScannerEngine === 'native' ? 'bg-yellow-400 text-yellow-900' : 'bg-white/20 text-white'">
+                    {{ localScannerEngine === 'native' ? '⚡ سريع' : 'JS' }}
+                </span>
             </div>
-            <button
-                @click="closeLocalScanner"
-                class="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition"
-            >
-                <i class="fas fa-times"></i>
-            </button>
+            <div class="flex items-center gap-2">
+                <button
+                    v-if="localTorchSupported"
+                    @click="toggleLocalTorch"
+                    :class="localTorchOn ? 'bg-yellow-400 text-black' : 'bg-white/20 hover:bg-white/30 text-white'"
+                    class="w-9 h-9 rounded-full flex items-center justify-center transition"
+                    title="الإضاءة"
+                >
+                    <i class="fas fa-bolt"></i>
+                </button>
+                <button
+                    @click="closeLocalScanner"
+                    class="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition"
+                >
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
         </div>
 
-        <!-- خطأ -->
         <div v-if="localScannerError"
              class="bg-red-50 border-b-2 border-red-300 p-3 text-red-700 text-sm flex items-start gap-2 flex-shrink-0">
             <i class="fas fa-exclamation-triangle mt-0.5"></i>
@@ -879,13 +983,11 @@ const app = createApp({
             </div>
         </div>
 
-        <!-- منطقة الكاميرا -->
         <div class="flex-1 relative bg-black overflow-hidden">
             <div id="local-reader" class="w-full h-full"></div>
 
-            <!-- إطار المسح -->
             <div class="absolute inset-0 pointer-events-none flex items-center justify-center z-10">
-                <div class="relative" style="width: 75%; max-width: 320px; aspect-ratio: 1.5;">
+                <div class="relative" style="width: 85%; max-width: 360px; aspect-ratio: 1.5;">
                     <div class="absolute top-0 right-0 w-10 h-10 border-t-4 border-r-4 border-emerald-400 rounded-tr-2xl"></div>
                     <div class="absolute top-0 left-0 w-10 h-10 border-t-4 border-l-4 border-emerald-400 rounded-tl-2xl"></div>
                     <div class="absolute bottom-0 right-0 w-10 h-10 border-b-4 border-r-4 border-emerald-400 rounded-br-2xl"></div>
@@ -894,13 +996,17 @@ const app = createApp({
                          style="animation: localScan 2s ease-in-out infinite; box-shadow: 0 0 20px 4px rgba(16, 185, 129, 0.6);"></div>
                 </div>
             </div>
+
+            <div v-if="localScanCount > 0" 
+                 class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-sm text-emerald-400 px-4 py-2 rounded-xl font-mono text-sm border border-emerald-500/30 z-20">
+                <i class="fas fa-bullseye"></i> مسحات: {{ localScanCount }}
+            </div>
         </div>
 
-        <!-- شريط سفلي -->
         <div class="bg-slate-900 text-white p-4 flex items-center justify-between flex-shrink-0">
             <div class="text-xs text-slate-400">
                 <i class="fas fa-info-circle"></i>
-                وجّه الكاميرا نحو الباركود
+                وجّه الكاميرا نحو الباركود (10-15 سم)
             </div>
             <button
                 @click="closeLocalScanner"
@@ -1469,7 +1575,6 @@ const app = createApp({
                 <i class="fas fa-times"></i> إغلاق
             </button>
 
-            <!-- ✅ زر قطع الاتصال (يظهر فقط عند الاتصال) -->
             <button 
                 v-if="scannerMode && scannerStatus === 'connected'"
                 @click="destroyPhoneScanner"
@@ -1608,7 +1713,15 @@ const app = createApp({
         // ✅ ماسح الباركود المحلي (للموبايل)
         const showLocalScanner = ref(false);
         const localScannerError = ref('');
+        const localScanCount = ref(0);
+        const localTorchOn = ref(false);
+        const localTorchSupported = ref(false);
+        const localScannerEngine = ref('');
         let localHtml5QrCode = null;
+        let nativeDetectorInterval = null;
+        let nativeStream = null;
+        let nativeVideoEl = null;
+        let nativeBarcodeDetector = null;
 
         let phonePeer = null;
         let phoneConnection = null;
@@ -2439,7 +2552,7 @@ const app = createApp({
         });
 
         // ═══════════════════════════════════════════════════════════
-        // ✅ الماسح المحلي — يستخدم كاميرا نفس الجهاز
+        // ✅ الماسح المحلي — BarcodeDetector API + Fallback
         // ═══════════════════════════════════════════════════════════
 
         const openLocalScanner = async () => {
@@ -2447,24 +2560,51 @@ const app = createApp({
 
             showLocalScanner.value = true;
             localScannerError.value = '';
+            localScanCount.value = 0;
+            localTorchOn.value = false;
+            localTorchSupported.value = false;
+            localScannerEngine.value = '';
 
-            // انتظر حتى يظهر الـ DOM
             await nextTick();
 
-            // تأكد من عدم وجود ماسح قديم
-            if (localHtml5QrCode) {
-                try { await localHtml5QrCode.stop(); } catch (e) {}
-                localHtml5QrCode = null;
-            }
+            await cleanupLocalScanner();
 
             const readerEl = document.getElementById('local-reader');
             if (!readerEl) {
                 localScannerError.value = 'عنصر الماسح غير موجود';
                 return;
             }
-
-            // امسح أي محتوى قديم
             readerEl.innerHTML = '';
+
+            if ('BarcodeDetector' in window) {
+                try {
+                    const supportedFormats = await window.BarcodeDetector.getSupportedFormats();
+                    console.log('📷 BarcodeDetector supported:', supportedFormats);
+
+                    const wantedFormats = [
+                        'ean_13', 'ean_8', 'code_128', 'code_39',
+                        'upc_a', 'upc_e', 'qr_code', 'code_93',
+                        'itf', 'codabar', 'data_matrix', 'pdf417', 'aztec'
+                    ];
+
+                    const formats = wantedFormats.filter(f => supportedFormats.includes(f));
+                    console.log('📷 Using formats:', formats);
+
+                    if (formats.length > 0) {
+                        const started = await startNativeBarcodeScanner(formats);
+                        if (started) {
+                            localScannerEngine.value = 'native';
+                            console.log('⚡ Native BarcodeDetector started');
+                            return;
+                        }
+                    }
+                } catch (err) {
+                    console.warn('⚠️ BarcodeDetector failed:', err);
+                }
+            }
+
+            console.log('📷 Using Html5Qrcode (fallback)');
+            localScannerEngine.value = 'js';
 
             try {
                 localHtml5QrCode = new Html5Qrcode('local-reader', {
@@ -2487,18 +2627,18 @@ const app = createApp({
                 });
 
                 const config = {
-                    fps: 15,
+                    fps: 20,
                     qrbox: (w, h) => {
                         const minEdge = Math.min(w, h);
-                        const size = Math.floor(minEdge * 0.7);
-                        return { width: size, height: size };
+                        const size = Math.floor(minEdge * 0.85);
+                        return { width: size, height: Math.floor(size * 0.7) };
                     },
                     aspectRatio: 1.0,
                     disableFlip: false,
                     videoConstraints: {
                         facingMode: { ideal: 'environment' },
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 },
+                        width: { ideal: 1920 },
+                        height: { ideal: 1080 },
                     },
                 };
 
@@ -2506,10 +2646,14 @@ const app = createApp({
                     { facingMode: 'environment' },
                     config,
                     onLocalScanSuccess,
-                    () => {} // تجاهل الأخطاء العابرة
+                    () => {}
                 );
 
-                console.log('✅ Local scanner started');
+                console.log('✅ Html5Qrcode started');
+
+                setTimeout(() => {
+                    detectTorchSupport();
+                }, 1000);
 
             } catch (err) {
                 console.error('❌ Local scanner error:', err);
@@ -2529,24 +2673,128 @@ const app = createApp({
             }
         };
 
+        const startNativeBarcodeScanner = async (formats) => {
+            try {
+                nativeStream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: { ideal: 'environment' },
+                        width: { ideal: 1920 },
+                        height: { ideal: 1080 },
+                    }
+                });
+
+                const readerEl = document.getElementById('local-reader');
+                readerEl.innerHTML = '';
+
+                nativeVideoEl = document.createElement('video');
+                nativeVideoEl.setAttribute('autoplay', 'true');
+                nativeVideoEl.setAttribute('playsinline', 'true');
+                nativeVideoEl.setAttribute('muted', 'true');
+                nativeVideoEl.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+                nativeVideoEl.srcObject = nativeStream;
+                readerEl.appendChild(nativeVideoEl);
+
+                await nativeVideoEl.play();
+
+                nativeBarcodeDetector = new window.BarcodeDetector({ formats });
+
+                setTimeout(() => detectTorchSupport(), 1000);
+
+                nativeDetectorInterval = setInterval(async () => {
+                    if (!nativeVideoEl || !nativeVideoEl.videoWidth) return;
+
+                    try {
+                        const barcodes = await nativeBarcodeDetector.detect(nativeVideoEl);
+                        if (barcodes.length > 0) {
+                            const code = barcodes[0].rawValue;
+                            onLocalScanSuccess(code);
+                        }
+                    } catch (e) {}
+                }, 100);
+
+                return true;
+
+            } catch (err) {
+                console.error('Native scanner error:', err);
+                if (nativeStream) {
+                    nativeStream.getTracks().forEach(t => t.stop());
+                    nativeStream = null;
+                }
+                if (nativeDetectorInterval) {
+                    clearInterval(nativeDetectorInterval);
+                    nativeDetectorInterval = null;
+                }
+                nativeVideoEl = null;
+                nativeBarcodeDetector = null;
+                return false;
+            }
+        };
+
+        const detectTorchSupport = () => {
+            try {
+                const video = document.querySelector('#local-reader video');
+                if (!video || !video.srcObject) {
+                    localTorchSupported.value = false;
+                    return;
+                }
+
+                const track = video.srcObject.getVideoTracks()[0];
+                if (!track) {
+                    localTorchSupported.value = false;
+                    return;
+                }
+
+                const capabilities = track.getCapabilities?.() || {};
+                localTorchSupported.value = !!capabilities.torch;
+
+                console.log('🔦 Torch supported:', localTorchSupported.value);
+            } catch (e) {
+                localTorchSupported.value = false;
+            }
+        };
+
+        const toggleLocalTorch = async () => {
+            try {
+                const video = document.querySelector('#local-reader video');
+                if (!video || !video.srcObject) return;
+
+                const track = video.srcObject.getVideoTracks()[0];
+                if (!track) return;
+
+                const capabilities = track.getCapabilities?.() || {};
+                if (!capabilities.torch) {
+                    showAlert('هذا الجهاز لا يدعم الإضاءة', 'warning');
+                    return;
+                }
+
+                localTorchOn.value = !localTorchOn.value;
+
+                await track.applyConstraints({
+                    advanced: [{ torch: localTorchOn.value }]
+                });
+
+                console.log('🔦 Torch:', localTorchOn.value ? 'ON' : 'OFF');
+            } catch (e) {
+                console.warn('Torch error:', e);
+                showAlert('تعذر تفعيل الإضاءة', 'error');
+            }
+        };
+
         const onLocalScanSuccess = (decodedText) => {
             const code = String(decodedText || '').trim();
             if (!code) return;
 
             console.log('📷 Local scan:', code);
 
-            // ابحث عن الدواء
             const medicine = findMedicineByBarcode(code);
 
             if (!medicine) {
                 playSound('error');
                 if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-                // لا نُغلق الماسح — نستمر بالمحاولة
                 showAlert(`❌ باركود غير معروف: ${code}`, 'error');
                 return;
             }
 
-            // ✅ أضف للسلة
             const batch = medicine.batches?.[0];
             const priceRecord = batch?.prices?.[0];
 
@@ -2556,41 +2804,54 @@ const app = createApp({
                 return;
             }
 
-            // استخدم نفس منطق addToCart
+            localScanCount.value++;
+
+            playSound('cart');
+            if (navigator.vibrate) navigator.vibrate(80);
+
             if (batch.prices && batch.prices.length > 1) {
-                // هناك عدة أسعار — أغلق الماسح واعرض اختيار الدفعة
                 closeLocalScanner();
                 addToCart(medicine, priceRecord);
             } else {
                 proceedAddToCart(medicine, priceRecord, batch);
-
-                // ✅ نجاح
-                playSound('cart');
-                if (navigator.vibrate) navigator.vibrate(80);
-
-                // إشعار نجاح
                 showAlert(`✅ تم إضافة: ${medicine.name}`, 'success');
             }
         };
 
-        const closeLocalScanner = async () => {
-            console.log('📷 Closing local scanner...');
+        const cleanupLocalScanner = async () => {
+            if (nativeDetectorInterval) {
+                clearInterval(nativeDetectorInterval);
+                nativeDetectorInterval = null;
+            }
+            if (nativeStream) {
+                try {
+                    nativeStream.getTracks().forEach(t => t.stop());
+                } catch (e) {}
+                nativeStream = null;
+            }
+            nativeVideoEl = null;
+            nativeBarcodeDetector = null;
 
             if (localHtml5QrCode) {
                 try {
                     await localHtml5QrCode.stop();
                     localHtml5QrCode.clear();
-                } catch (e) {
-                    console.warn('Stop error:', e);
-                }
+                } catch (e) {}
                 localHtml5QrCode = null;
             }
 
-            showLocalScanner.value = false;
-            localScannerError.value = '';
+            localTorchOn.value = false;
+            localTorchSupported.value = false;
         };
 
-        // Phone Scanner (remote)
+        const closeLocalScanner = async () => {
+            console.log('📷 Closing local scanner...');
+            await cleanupLocalScanner();
+            showLocalScanner.value = false;
+            localScannerError.value = '';
+            localScannerEngine.value = '';
+        };
+
         const testPeerJSCloud = () => {
             return new Promise((resolve) => {
                 if (!navigator.onLine) {
@@ -2635,7 +2896,6 @@ const app = createApp({
         const openPhoneScanner = async () => {
             showScannerModal.value = true;
         
-            // ✅ إذا كان الاتصال نشطاً بالفعل، لا تعيد التهيئة
             if (scannerMode.value === 'peerjs' && phonePeer && !phonePeer.destroyed) {
                 console.log('♻️ Reusing existing PeerJS connection');
                 scannerStatus.value = phoneConnection?.open ? 'connected' : 'online-mode';
@@ -2768,7 +3028,6 @@ const app = createApp({
                             const success = handleScannedBarcode(code);
                             playSound(success ? 'cart' : 'error');
 
-                            // ✅ إذا كان المودال مغلقاً، أظهر إشعاراً
                             if (!showScannerModal.value) {
                                 if (success) {
                                     showAlert(`✅ تم مسح: ${code}`, 'success');
@@ -2893,7 +3152,6 @@ const app = createApp({
                             const success = handleScannedBarcode(msg.code);
                             playSound(success ? 'cart' : 'error');
 
-                            // ✅ إشعار عند المودال مغلق
                             if (!showScannerModal.value) {
                                 if (success) {
                                     showAlert(`✅ تم مسح: ${msg.code}`, 'success');
@@ -3013,13 +3271,11 @@ const app = createApp({
             return true;
         };
 
-        // ✅ إخفاء المودال فقط — الاتصال يبقى نشطاً
         const closePhoneScanner = () => {
             console.log('👁️ Hiding scanner modal (connection stays alive)');
             showScannerModal.value = false;
         };
         
-        // ✅ قطع الاتصال فعلياً — يُستدعى عند الحاجة فقط
         const destroyPhoneScanner = () => {
             console.log('🔌 Destroying scanner connection');
         
@@ -3721,7 +3977,6 @@ const app = createApp({
                     return;
                 }
 
-                // ✅ مسار POS الجديد — يجلب مبيعات الوردية المفتوحة فقط
                 const response = await axios.get(`${API_BASE}/pos/recent-sales`, {
                     params: { _ts: Date.now() },
                     headers: {
@@ -3796,9 +4051,7 @@ const app = createApp({
             setPrintServerSettings(pharmacySettings.value);
             printSettings.value = getPrintSettings();
             isLoading.value = true;
-           // ═══════════════════════════════════════════════════════
-            // ✅ التحقق من simple-peer (يُحمّل من HTML مسبقاً)
-            // ═══════════════════════════════════════════════════════
+
             if (typeof window.SimplePeer === 'function') {
                 console.log('✅ simple-peer ready from HTML script');
                 SimplePeerConstructor = window.SimplePeer;
@@ -3914,11 +4167,7 @@ const app = createApp({
         };
 
         const logout = () => {
-            // ✅ نظّف الماسح المحلي
-            if (localHtml5QrCode) {
-                try { localHtml5QrCode.stop(); } catch (e) {}
-                localHtml5QrCode = null;
-            }
+            cleanupLocalScanner();
 
             localStorage.removeItem('token');
             localStorage.removeItem('offline_mode');
@@ -3989,13 +4238,9 @@ const app = createApp({
             window.removeEventListener('online', handleOnline);
             window.removeEventListener('offline', handleOffline);
             document.removeEventListener('visibilitychange', handleVisibilityChange);
-            // ✅ اقطع اتصال الماسح البعيد
+
             destroyPhoneScanner();
-            // ✅ نظّف الماسح المحلي
-            if (localHtml5QrCode) {
-                try { localHtml5QrCode.stop(); } catch (e) {}
-                localHtml5QrCode = null;
-            }
+            cleanupLocalScanner();
         });
 
         return {
@@ -4107,7 +4352,6 @@ const app = createApp({
             activeCashier,
             syncProgress,
 
-            // Responsive
             activeTab,
 
             // Phone Scanner (Remote)
@@ -4126,11 +4370,16 @@ const app = createApp({
             regeneratePeerId,
             destroyPhoneScanner,
 
-            // ✅ Local Scanner (Mobile)
+            // Local Scanner (Mobile)
             showLocalScanner,
             localScannerError,
             openLocalScanner,
             closeLocalScanner,
+            localScanCount,
+            localTorchOn,
+            localTorchSupported,
+            localScannerEngine,
+            toggleLocalTorch,
         };
     }
 });
