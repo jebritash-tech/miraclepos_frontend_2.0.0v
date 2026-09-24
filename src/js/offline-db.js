@@ -1,8 +1,8 @@
 // offline-db.js
 import Dexie from 'dexie';
-const db = new Dexie('MiraclePOSDB');
+const db = new Dexie('MiraclePOSDB_Altelal');
 
-db.version(3).stores({
+db.version(6).stores({
     pending_sales: 'id, synced, shift_id, created_at',
     pending_refunds: 'id, synced, sale_id, created_at',
     cached_medicines: 'id, name, barcode',
