@@ -1,0 +1,1 @@
+const api = "https://miraclepos-api.test/api";

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>فتح الوردية</title>
+
+
+    <link
+        rel="manifest"
+        href="./manifest.json"
+    >
+
+    <link rel="stylesheet" href="./no-zoom.css">
+<script
+        type="module"
+        src="./src/js/pages/shift.js"
+    ></script>
+</head>
+
+<body class="bg-slate-100 h-screen flex items-center justify-center">
+
+<div id="app" class="bg-white w-full max-w-md rounded-2xl shadow-xl p-8">
+    
+template: `
+<div class="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-emerald-50/30 flex items-center justify-center p-4 sm:p-6">
+
+    <div class="w-full max-w-lg">
+
+        <!-- ✅ بطاقة فتح الوردية -->
+        <div class="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
+
+            <!-- Header -->
+            <div class="bg-gradient-to-br from-emerald-600 to-emerald-700 px-6 sm:px-8 py-8 text-center relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
+                <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full -ml-12 -mb-12"></div>
+
+                <div class="relative z-10">
+                    <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-white/15 backdrop-blur-sm border border-white/20 flex items-center justify-center">
+                        <i class="fas fa-cash-register text-white text-3xl"></i>
+                    </div>
+                    <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                        فتح الوردية
+                    </h1>
+                    <p v-if="currentUser?.name" class="text-emerald-100 text-xs sm:text-sm mt-1.5 font-medium">
+                        {{ currentUser.name }}
+                    </p>
+                    <p v-if="currentUser?.branch?.name" class="text-emerald-200/80 text-[10px] sm:text-xs mt-0.5">
+                        <i class="fas fa-map-marker-alt text-[9px]"></i>
+                        {{ currentUser.branch.name }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Body -->
+            <div class="px-6 sm:px-8 py-6 sm:py-8">
+
+                <!-- Progress bar (sync) -->
+                <div v-if="syncProgress.active" class="mb-6 bg-blue-50 border border-blue-200 rounded-2xl p-4">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-sync-alt fa-spin text-blue-600 text-xl"></i>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="font-bold text-blue-900 text-sm">جاري مزامنة البيانات...</span>
+                                <span class="text-xs font-mono text-blue-700">
+                                    {{ syncProgress.current }} / {{ syncProgress.total }}
+                                </span>
+                            </div>
+                            <div class="w-full bg-blue-100 rounded-full h-1.5 overflow-hidden">
+                                <div class="bg-blue-600 h-full rounded-full transition-all duration-300"
+                                    :style="{ width: (syncProgress.total > 0 ? (syncProgress.current / syncProgress.total) * 100 : 0) + '%' }">
+                                </div>
+                            </div>
+                            <div class="text-xs text-blue-700 mt-1">
+                                {{ syncProgress.currentLabel }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Offline Notice -->
+                <div v-if="!isOnline" class="mb-6 bg-amber-50 border border-amber-200 text-amber-800 rounded-2xl p-4">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-wifi-slash mt-1"></i>
+                        <div>
+                            <div class="font-bold">وضع عدم الاتصال</div>
+                            <p class="text-sm mt-1">سيتم حفظ فتح الوردية محلياً.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading Medicines -->
+                <div v-if="loadingMedicines" class="mb-6 bg-purple-50 border border-purple-200 rounded-2xl p-4 text-center">
+                    <i class="fas fa-pills fa-spin text-purple-600 text-xl mb-2"></i>
+                    <p class="text-sm text-purple-800">جاري تحميل قائمة الأدوية...</p>
+                </div>
+
+                <!-- Medicines Ready -->
+                <div v-else-if="medicinesCount > 0" class="mb-6 bg-emerald-50 border border-emerald-200 rounded-2xl p-3 text-center">
+                    <p class="text-xs text-emerald-800">
+                        <i class="fas fa-check-circle text-emerald-600"></i>
+                        <span class="font-bold">{{ medicinesCount }}</span> دواء جاهز للبيع
+                        <span v-if="medicinesSource === 'cache'" class="text-emerald-600 mr-1">
+                            (من الذاكرة المحلية)
+                        </span>
+                        <span v-else-if="medicinesSource === 'server'" class="text-emerald-600 mr-1">
+                            (محدّث من السيرفر)
+                        </span>
+                    </p>
+                </div>
+
+                <!-- Medicines Error -->
+                <div v-else-if="medicinesError" class="mb-6 bg-red-50 border border-red-200 rounded-2xl p-3">
+                    <p class="text-xs text-red-800">
+                        <i class="fas fa-exclamation-triangle text-red-600"></i>
+                        <span>{{ medicinesError }}</span>
+                    </p>
+                    <p class="text-[10px] text-red-600 mt-1">
+                        يمكنك المتابعة — لكن البيع قد لا يعمل بدون أدوية.
+                    </p>
+                </div>
+
+                <!-- Checking Shift -->
+                <div v-if="checkingShift" class="mb-6 bg-blue-50 border border-blue-200 rounded-2xl p-4 text-center">
+                    <i class="fas fa-spinner fa-spin text-blue-600 text-xl mb-2"></i>
+                    <p class="text-sm text-blue-800">جاري التحقق من الورديات...</p>
+                </div>
+
+                <!-- Existing Open Shift -->
+                <div v-if="cachedShift && cachedShift.status === 'open'" class="mb-6 bg-emerald-50 border border-emerald-200 rounded-2xl p-5">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-bold text-emerald-800">توجد وردية مفتوحة</span>
+                        <span class="text-xs bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full">
+                            {{ isOnline ? 'محفوظة على الخادم' : 'محفوظة محلياً' }}
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 text-sm">
+                        <div>
+                            <div class="text-slate-500">الرصيد الافتتاحي</div>
+                            <div class="font-bold text-slate-800">{{ Number(cachedShift.opening_cash || 0).toLocaleString() }} ج.س</div>
+                        </div>
+                        <div>
+                            <div class="text-slate-500">الحالة</div>
+                            <div class="font-bold text-emerald-700">مفتوحة</div>
+                        </div>
+                    </div>
+                    <button 
+                        type="button" 
+                        @click="goToPOS" 
+                        :disabled="medicinesCount === 0 && !!medicinesError"
+                        class="w-full mt-5 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-3 rounded-xl font-bold transition"
+                    >
+                        <span v-if="loadingMedicines">
+                            <i class="fas fa-spinner fa-spin ml-1"></i> جاري تحميل الأدوية...
+                        </span>
+                        <span v-else-if="medicinesCount === 0 && medicinesError">
+                            <i class="fas fa-exclamation-triangle ml-1"></i> لا يمكن المتابعة — لا توجد أدوية
+                        </span>
+                        <span v-else>
+                            متابعة إلى نقطة البيع
+                        </span>
+                    </button>
+                </div>
+
+                <!-- Open Shift Form -->
+                <form v-if="!checkingShift && (!cachedShift || cachedShift.status !== 'open')" @submit.prevent="openShift" class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">
+                            <i class="fas fa-money-bill-wave text-emerald-600 text-xs ml-1"></i>
+                            الرصيد الافتتاحي
+                        </label>
+                        <input 
+                            v-model.number="openingCash" 
+                            type="number" 
+                            min="0" 
+                            step="0.01" 
+                            required
+                            :disabled="openingInProgress"
+                            class="w-full border-2 border-slate-200 bg-slate-50 rounded-xl px-4 py-4 text-xl font-bold text-center focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all disabled:opacity-60"
+                        >
+                    </div>
+
+                    <button 
+                        type="submit" 
+                        :disabled="openingInProgress || !currentUser || loadingMedicines"
+                        class="w-full bg-gradient-to-br from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 disabled:from-emerald-300 disabled:to-emerald-300 disabled:cursor-not-allowed text-white py-4 rounded-2xl font-black text-lg transition-all shadow-lg shadow-emerald-600/25 active:scale-[0.98] flex items-center justify-center gap-2"
+                    >
+                        <i v-if="openingInProgress" class="fas fa-spinner fa-spin"></i>
+                        <i v-else class="fas fa-door-open"></i>
+                        <span v-if="openingInProgress">جاري فتح الوردية...</span>
+                        <span v-else-if="loadingMedicines">
+                            <i class="fas fa-spinner fa-spin"></i> جاري تحميل الأدوية...
+                        </span>
+                        <span v-else>فتح الوردية والانتقال للبيع</span>
+                    </button>
+                </form>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="bg-slate-50 border-t border-slate-100 px-6 py-4 text-center">
+                <p class="text-[10px] text-slate-400">
+                    MiraclePOS v2.0 — جميع الحقوق محفوظة © 2026
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ✅ Overlay فتح الوردية -->
+    <transition
+        enter-active-class="transition-opacity duration-200"
+        enter-from-class="opacity-0"
+        enter-to-class="opacity-100"
+        leave-active-class="transition-opacity duration-200"
+        leave-from-class="opacity-100"
+        leave-to-class="opacity-0"
+    >
+        <div
+            v-if="openingInProgress"
+            class="fixed inset-0 z-[99999] bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-6"
+        >
+            <div class="text-center max-w-sm">
+                <div class="relative w-24 h-24 mx-auto mb-6">
+                    <div class="absolute inset-0 rounded-full border-4 border-emerald-500/20"></div>
+                    <div class="absolute inset-0 rounded-full border-4 border-transparent border-t-emerald-500 animate-spin"></div>
+                    <div class="absolute inset-3 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                        <i class="fas fa-door-open text-emerald-400 text-3xl"></i>
+                    </div>
+                </div>
+
+                <h2 class="text-xl font-black text-white mb-2">جاري فتح الوردية...</h2>
+                <p class="text-sm text-slate-300 mb-4">يتم تجهيز نقطة البيع، الرجاء الانتظار</p>
+
+                <div class="flex items-center justify-center gap-1.5 mt-6">
+                    <div class="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style="animation-delay: 0s"></div>
+                    <div class="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style="animation-delay: 0.15s"></div>
+                    <div class="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style="animation-delay: 0.3s"></div>
+                </div>
+            </div>
+        </div>
+    </transition>
+
+    <!-- ✅ Overlay المتابعة إلى POS -->
+    <transition
+        enter-active-class="transition-opacity duration-200"
+        enter-from-class="opacity-0"
+        enter-to-class="opacity-100"
+        leave-active-class="transition-opacity duration-200"
+        leave-from-class="opacity-100"
+        leave-to-class="opacity-0"
+    >
+        <div
+            v-if="navigatingToPOS"
+            class="fixed inset-0 z-[99999] bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-6"
+        >
+            <div class="text-center max-w-sm">
+                <div class="relative w-24 h-24 mx-auto mb-6">
+                    <div class="absolute inset-0 rounded-full border-4 border-blue-500/20"></div>
+                    <div class="absolute inset-0 rounded-full border-4 border-transparent border-t-blue-500 animate-spin"></div>
+                    <div class="absolute inset-3 rounded-full bg-blue-500/10 flex items-center justify-center">
+                        <i class="fas fa-arrow-left text-blue-400 text-3xl"></i>
+                    </div>
+                </div>
+
+                <h2 class="text-xl font-black text-white mb-2">جاري الانتقال إلى نقطة البيع...</h2>
+                <p class="text-sm text-slate-300 mb-4">يتم تجهيز الواجهة، الرجاء الانتظار</p>
+
+                <div class="flex items-center justify-center gap-1.5 mt-6">
+                    <div class="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style="animation-delay: 0s"></div>
+                    <div class="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style="animation-delay: 0.15s"></div>
+                    <div class="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style="animation-delay: 0.3s"></div>
+                </div>
+            </div>
+        </div>
+    </transition>
+
+</div>
+`
+
+</div>
+
+
+</body>
+
+</html>

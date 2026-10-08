@@ -1,0 +1,2654 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دليل استخدام MiraclePOS - نظام إدارة الصيدليات</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+/* ============================================================
+   Reset & Base
+   ============================================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Cairo', sans-serif;
+    background: #f1f5f9;
+    color: #1e293b;
+    line-height: 1.8;
+    font-size: 15px;
+}
+
+/* ============================================================
+   Page Container
+   ============================================================ */
+.page {
+    max-width: 210mm; /* A4 width */
+    min-height: 297mm;
+    background: #fff;
+    margin: 20px auto;
+    padding: 25mm 20mm;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    border-radius: 4px;
+    page-break-after: always;
+    position: relative;
+}
+
+/* ============================================================
+   Cover Page
+   ============================================================ */
+.cover {
+    background: linear-gradient(135deg, #0f172a 0%, #064e3b 50%, #10b981 100%);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 40mm 20mm;
+}
+
+.cover-logo {
+    width: 120px;
+    height: 120px;
+    background: rgba(255,255,255,0.1);
+    border: 3px solid rgba(255,255,255,0.2);
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 60px;
+    margin-bottom: 30px;
+    backdrop-filter: blur(10px);
+}
+
+.cover h1 {
+    font-size: 48px;
+    font-weight: 900;
+    margin-bottom: 15px;
+    letter-spacing: -1px;
+}
+
+.cover h1 span {
+    color: #34d399;
+}
+
+.cover .subtitle {
+    font-size: 20px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 10px;
+}
+
+.cover .desc {
+    font-size: 15px;
+    color: rgba(255,255,255,0.7);
+    max-width: 500px;
+    margin: 20px 0 60px;
+}
+
+.cover-meta {
+    display: flex;
+    gap: 40px;
+    padding: 25px 40px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.cover-meta div {
+    text-align: center;
+}
+
+.cover-meta .num {
+    font-size: 28px;
+    font-weight: 900;
+    color: #34d399;
+}
+
+.cover-meta .lbl {
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+    margin-top: 5px;
+}
+
+.cover-footer {
+    position: absolute;
+    bottom: 20mm;
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+}
+
+/* ============================================================
+   Table of Contents
+   ============================================================ */
+.toc-title {
+    font-size: 32px;
+    font-weight: 900;
+    color: #0f172a;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 3px solid #10b981;
+    display: inline-block;
+}
+
+.toc-section {
+    margin-bottom: 30px;
+}
+
+.toc-section-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #10b981;
+    margin-bottom: 15px;
+    padding-right: 15px;
+    border-right: 4px solid #10b981;
+}
+
+.toc-list {
+    list-style: none;
+    padding-right: 20px;
+}
+
+.toc-list li {
+    padding: 8px 0;
+    font-size: 14px;
+    color: #475569;
+    border-bottom: 1px dashed #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.toc-list li:hover {
+    color: #10b981;
+}
+
+.toc-list .page-num {
+    font-weight: 700;
+    color: #94a3b8;
+    font-family: monospace;
+}
+
+/* ============================================================
+   Section Header
+   ============================================================ */
+.section-header {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #fff;
+    padding: 20px 25px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+}
+
+.section-header i {
+    font-size: 32px;
+    opacity: 0.9;
+}
+
+.section-header .header-text h2 {
+    font-size: 24px;
+    font-weight: 900;
+    margin-bottom: 3px;
+}
+
+.section-header .header-text p {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+/* ============================================================
+   Headings
+   ============================================================ */
+h2 {
+    font-size: 26px;
+    font-weight: 900;
+    color: #0f172a;
+    margin: 40px 0 20px;
+    padding-right: 15px;
+    border-right: 5px solid #10b981;
+}
+
+h3 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 30px 0 15px;
+    padding-right: 12px;
+    border-right: 3px solid #10b981;
+}
+
+h4 {
+    font-size: 17px;
+    font-weight: 800;
+    color: #334155;
+    margin: 20px 0 10px;
+}
+
+p {
+    margin-bottom: 15px;
+    color: #475569;
+    font-size: 14px;
+    line-height: 1.9;
+}
+
+/* ============================================================
+   Numbered Step List
+   ============================================================ */
+.steps {
+    counter-reset: step-counter;
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.steps > li {
+    counter-increment: step-counter;
+    position: relative;
+    padding: 15px 65px 15px 20px;
+    margin-bottom: 12px;
+    background: #f8fafc;
+    border-radius: 12px;
+    border-right: 3px solid #10b981;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.steps > li::before {
+    content: counter(step-counter);
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 35px;
+    height: 35px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #fff;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 16px;
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+}
+
+.steps > li strong {
+    color: #0f172a;
+    font-weight: 800;
+}
+
+/* ============================================================
+   Field Table (for شروحات الحقول)
+   ============================================================ */
+.field-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 13px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.field-table thead {
+    background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+}
+
+.field-table th {
+    padding: 12px 15px;
+    text-align: right;
+    font-weight: 800;
+    color: #0f172a;
+    font-size: 13px;
+    border-bottom: 2px solid #cbd5e1;
+}
+
+.field-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: top;
+    color: #475569;
+    line-height: 1.7;
+}
+
+.field-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.field-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.field-table .field-name {
+    font-weight: 800;
+    color: #0f172a;
+    white-space: nowrap;
+    font-size: 13px;
+}
+
+.field-table .field-required {
+    display: inline-block;
+    background: #fee2e2;
+    color: #dc2626;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-weight: 700;
+    margin-right: 5px;
+}
+
+.field-table .field-optional {
+    display: inline-block;
+    background: #e0f2fe;
+    color: #0369a1;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-weight: 700;
+    margin-right: 5px;
+}
+
+.field-table code {
+    background: #f1f5f9;
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: #0f172a;
+    font-weight: 700;
+}
+
+/* ============================================================
+   Callout Boxes
+   ============================================================ */
+.callout {
+    padding: 15px 20px;
+    border-radius: 12px;
+    margin: 20px 0;
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.callout i {
+    font-size: 22px;
+    flex-shrink: 0;
+    margin-top: 3px;
+}
+
+.callout-content {
+    flex: 1;
+}
+
+.callout-content strong {
+    display: block;
+    font-weight: 800;
+    margin-bottom: 5px;
+    font-size: 15px;
+}
+
+.callout.info {
+    background: #eff6ff;
+    border-right: 4px solid #3b82f6;
+    color: #1e40af;
+}
+
+.callout.info i { color: #3b82f6; }
+
+.callout.warning {
+    background: #fffbeb;
+    border-right: 4px solid #f59e0b;
+    color: #92400e;
+}
+
+.callout.warning i { color: #f59e0b; }
+
+.callout.danger {
+    background: #fef2f2;
+    border-right: 4px solid #dc2626;
+    color: #991b1b;
+}
+
+.callout.danger i { color: #dc2626; }
+
+.callout.success {
+    background: #ecfdf5;
+    border-right: 4px solid #10b981;
+    color: #065f46;
+}
+
+.callout.success i { color: #10b981; }
+
+.callout.tip {
+    background: #f5f3ff;
+    border-right: 4px solid #8b5cf6;
+    color: #5b21b6;
+}
+
+.callout.tip i { color: #8b5cf6; }
+
+/* ============================================================
+   Screenshot Placeholder
+   ============================================================ */
+.screenshot {
+    background: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    border-radius: 15px;
+    padding: 40px 20px;
+    text-align: center;
+    margin: 20px 0;
+    color: #94a3b8;
+}
+
+.screenshot i {
+    font-size: 48px;
+    margin-bottom: 15px;
+    color: #cbd5e1;
+}
+
+.screenshot .label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #64748b;
+    margin-bottom: 5px;
+}
+
+.screenshot .hint {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+/* ============================================================
+   Badge
+   ============================================================ */
+.badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+    margin: 0 3px;
+}
+
+.badge-primary { background: #dbeafe; color: #1e40af; }
+.badge-success { background: #d1fae5; color: #065f46; }
+.badge-warning { background: #fef3c7; color: #92400e; }
+.badge-danger { background: #fee2e2; color: #991b1b; }
+.badge-info { background: #e0f2fe; color: #0369a1; }
+
+/* ============================================================
+   Key Highlight
+   ============================================================ */
+.key {
+    background: #fef3c7;
+    color: #78350f;
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-weight: 800;
+    font-size: 13px;
+    border: 1px solid #fcd34d;
+}
+
+/* ============================================================
+   Divider
+   ============================================================ */
+.divider {
+    height: 1px;
+    background: linear-gradient(to left, transparent, #cbd5e1, transparent);
+    margin: 40px 0;
+}
+
+/* ============================================================
+   Page Footer
+   ============================================================ */
+.page-footer {
+    position: absolute;
+    bottom: 15mm;
+    left: 20mm;
+    right: 20mm;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: #94a3b8;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 10px;
+}
+
+/* ============================================================
+   Print Styles
+   ============================================================ */
+@media print {
+    body {
+        background: #fff;
+    }
+    .page {
+        margin: 0;
+        box-shadow: none;
+        border-radius: 0;
+    }
+    .no-print {
+        display: none;
+    }
+}
+
+/* ============================================================
+   Print Button
+   ============================================================ */
+.print-btn {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #fff;
+    border: none;
+    padding: 15px 25px;
+    border-radius: 15px;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s;
+}
+
+.print-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(16, 185, 129, 0.5);
+}
+
+@media print {
+    .print-btn { display: none; }
+}
+
+/* ============================================================
+   Responsive (Mobile view)
+   ============================================================ */
+@media (max-width: 768px) {
+    .page {
+        padding: 20px 15px;
+        margin: 10px auto;
+        max-width: 100%;
+    }
+    
+    .cover h1 { font-size: 32px; }
+    .cover-meta { flex-direction: column; gap: 20px; padding: 20px; }
+    .section-header { padding: 15px; }
+    .section-header .header-text h2 { font-size: 18px; }
+    .section-header i { font-size: 24px; }
+    
+    h2 { font-size: 20px; }
+    h3 { font-size: 17px; }
+    
+    .field-table { font-size: 12px; }
+    .field-table th,
+    .field-table td { padding: 8px 10px; }
+    
+    .steps > li { padding: 12px 55px 12px 15px; }
+    .steps > li::before { width: 30px; height: 30px; font-size: 14px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Print Button -->
+<button class="print-btn no-print" onclick="window.print()">
+    <i class="fas fa-print"></i>
+    طباعة / حفظ PDF
+</button>
+
+<!-- ============================================================
+     COVER PAGE
+     ============================================================ -->
+<div class="page cover">
+    <div class="cover-logo">💊</div>
+    <h1>Miracle<span>POS</span></h1>
+    <div class="subtitle">نظام إدارة الصيدليات المتكامل</div>
+    <div class="desc">
+        دليل شامل لاستخدام النظام — من التثبيت إلى الاحتراف
+    </div>
+    
+    <div class="cover-meta">
+        <div>
+            <div class="num">2.0</div>
+            <div class="lbl">الإصدار</div>
+        </div>
+        <div>
+            <div class="num">2026</div>
+            <div class="lbl">السنة</div>
+        </div>
+        <div>
+            <div class="num">8</div>
+            <div class="lbl">فصول</div>
+        </div>
+    </div>
+    
+    <div class="cover-footer">
+        © 2026 MiraclePOS — جميع الحقوق محفوظة
+    </div>
+</div>
+
+<!-- ============================================================
+     TABLE OF CONTENTS
+     ============================================================ -->
+<div class="page">
+    <h1 class="toc-title">
+        <i class="fas fa-list-ul" style="color: #10b981; margin-left: 10px;"></i>
+        فهرس المحتويات
+    </h1>
+    
+    <div class="toc-section">
+        <div class="toc-section-title">القسم الأول: دليل البدء السريع</div>
+        <ul class="toc-list">
+            <li>
+                <span>1. مقدمة وشروط التشغيل</span>
+                <span class="page-num">3</span>
+            </li>
+            <li>
+                <span>2. تثبيت النظام على الجهاز (PWA)</span>
+                <span class="page-num">4</span>
+            </li>
+            <li>
+                <span>3. تسجيل الدخول وفتح الوردية</span>
+                <span class="page-num">5</span>
+            </li>
+            <li>
+                <span>4. إضافة مورد جديد</span>
+                <span class="page-num">6</span>
+            </li>
+            <li>
+                <span>5. إضافة تصنيف جديد</span>
+                <span class="page-num">6</span>
+            </li>
+            <li>
+                <span>6. إضافة دواء جديد (بالتفصيل)</span>
+                <span class="page-num">7</span>
+            </li>
+            <li>
+                <span>7. تسجيل فاتورة شراء</span>
+                <span class="page-num">9</span>
+            </li>
+            <li>
+                <span>8. معاينة وتعديل الأسعار (مهم!)</span>
+                <span class="page-num">11</span>
+            </li>
+            <li>
+                <span>9. البدء في البيع</span>
+                <span class="page-num">12</span>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="toc-section">
+        <div class="toc-section-title">القسم الثاني: شرح مفصل للنظام</div>
+        <ul class="toc-list">
+            <li>
+                <span>10. لوحة التحكم — نظرة عامة</span>
+                <span class="page-num">14</span>
+            </li>
+            <li>
+                <span>11. إدارة المخزون</span>
+                <span class="page-num">16</span>
+            </li>
+            <li>
+                <span>12. الورديات والدرج</span>
+                <span class="page-num">18</span>
+            </li>
+            <li>
+                <span>13. الديون والعملاء</span>
+                <span class="page-num">20</span>
+            </li>
+            <li>
+                <span>14. المصروفات والرواتب</span>
+                <span class="page-num">22</span>
+            </li>
+            <li>
+                <span>15. التقارير والتحليلات</span>
+                <span class="page-num">24</span>
+            </li>
+            <li>
+                <span>16. الإعدادات والنسخ الاحتياطي</span>
+                <span class="page-num">26</span>
+            </li>
+            <li>
+                <span>17. واجهة البيع (POS)</span>
+                <span class="page-num">28</span>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="page-footer">
+        <span>MiraclePOS — دليل الاستخدام</span>
+        <span>2</span>
+    </div>
+</div>
+
+<!-- ============================================================
+     SECTION 1: QUICK START GUIDE
+     ============================================================ -->
+<div class="page">
+    <div class="section-header">
+        <i class="fas fa-rocket"></i>
+        <div class="header-text">
+            <h2>القسم الأول</h2>
+            <p>دليل البدء السريع — استخدم النظام في 30 دقيقة</p>
+        </div>
+    </div>
+    
+    <div class="callout success">
+        <i class="fas fa-bullseye"></i>
+        <div class="callout-content">
+            <strong>هدف هذا القسم</strong>
+            مساعدتك على تشغيل النظام فوراً — من التثبيت إلى أول عملية بيع. اتبع الخطوات بالترتيب ولا تتجاوز أي خطوة.
+        </div>
+    </div>
+    
+    <h2>1. مقدمة وشروط التشغيل</h2>
+    
+    <p>
+        <strong>MiraclePOS</strong> هو نظام متكامل لإدارة الصيدليات يعمل مباشرة من المتصفح، ويمكن تثبيته على الجهاز كتطبيق مستقل (PWA). النظام يعمل مع أو بدون إنترنت، مع مزامنة تلقائية عند عودة الاتصال.
+    </p>
+    
+    <h3>الحد الأدنى لمتطلبات التشغيل</h3>
+    
+    <table class="field-table">
+        <thead>
+            <tr>
+                <th>المتطلب</th>
+                <th>الحد الأدنى</th>
+                <th>المستحسن</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="field-name">المتصفح</td>
+                <td>Chrome 90+، Edge 90+</td>
+                <td>Google Chrome أحدث إصدار</td>
+            </tr>
+            <tr>
+                <td class="field-name">نظام التشغيل</td>
+                <td>Windows 10، Android 8، iOS 13</td>
+                <td>Windows 11، Android 12+</td>
+            </tr>
+            <tr>
+                <td class="field-name">الذاكرة</td>
+                <td>2 جيجا RAM</td>
+                <td>4 جيجا RAM أو أكثر</td>
+            </tr>
+            <tr>
+                <td class="field-name">الشاشة</td>
+                <td>1024×768 بكسل</td>
+                <td>1920×1080 بكسل (Full HD)</td>
+            </tr>
+            <tr>
+                <td class="field-name">الإنترنت</td>
+                <td>2 Mbps (للتثبيت والمزامنة)</td>
+                <td>5 Mbps أو أكثر</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="callout info">
+        <i class="fas fa-info-circle"></i>
+        <div class="callout-content">
+            <strong>ملاحظة مهمة</strong>
+            النظام يعمل بدون إنترنت بعد تثبيته. تحتاج الإنترنت فقط:
+            <br>• للتثبيت الأول
+            <br>• لمزامنة البيانات مع السيرفر
+            <br>• لتحديث الأسعار والأدوية
+        </div>
+    </div>
+    
+    <div class="page-footer">
+        <span>MiraclePOS — دليل الاستخدام</span>
+        <span>3</span>
+    </div>
+</div>
+
+<!-- ============================================================
+     INSTALLATION
+     ============================================================ -->
+<div class="page">
+    <h2>2. تثبيت النظام على الجهاز (PWA)</h2>
+    
+    <p>
+        PWA (Progressive Web App) يعني أن النظام سيُثبَّت على جهازك كتطبيق مستقل، بأيقونة على سطح المكتب، ويعمل بدون الحاجة لفتح المتصفح.
+    </p>
+    
+    <h3>التثبيت على الكمبيوتر (Windows / macOS)</h3>
+    
+    <ol class="steps">
+        <li>
+            <strong>افتح المتصفح</strong> (Google Chrome مستحسن)
+        </li>
+        <li>
+            <strong>انتقل إلى رابط النظام</strong>
+            <br>مثال: <code><a  target="_blank" href="https://jebritash-tech.github.io/miraclepos_frontend-sundos_2.0.0v/install.html">تثبيت الان</a></code>
+        </li>
+        <li>
+            <strong>ابحث عن أيقونة التثبيت</strong> في شريط العنوان (أعلى المتصفح) — تظهر أيقونة صغيرة بشكل شاشة أو سهم للأسفل.
+        </li>
+        <li>
+            <strong>اضغط على الأيقونة</strong> → ستظهر نافذة "تثبيت التطبيق" → اضغط <span class="key">تثبيت</span>
+        </li>
+        <li>
+            ستظهر أيقونة <strong>MiraclePOS</strong> على سطح المكتب وفي قائمة ابدأ.
+        </li>
+    </ol>
+    
+    <div class="callout tip">
+        <i class="fas fa-lightbulb"></i>
+        <div class="callout-content">
+            <strong>نصيحة</strong>
+            إذا لم تجد أيقونة التثبيت، اضغط على الثلاث نقاط (⋮) في أعلى المتصفح → اختر "تثبيت MiraclePOS" أو "Install App".
+        </div>
+    </div>
+    
+    <h3>التثبيت على الجوال (Android)</h3>
+    
+    <ol class="steps">
+        <li>
+            <strong>افتح Chrome</strong> على الجوال
+        </li>
+        <li>
+            <strong>انتقل إلى رابط النظام</strong>
+        </li>
+        <li>
+            ستظهر رسالة سفلية: <em>"إضافة MiraclePOS إلى الشاشة الرئيسية"</em> → اضغط عليها
+        </li>
+        <li>
+            إذا لم تظهر، اضغط على الثلاث نقاط → <span class="key">إضافة إلى الشاشة الرئيسية</span>
+        </li>
+    </ol>
+    
+    <h3>التثبيت على iPhone / iPad</h3>
+    
+    <ol class="steps">
+        <li>
+            <strong>افتح Safari</strong> (متصفح آبل)
+        </li>
+        <li>
+            <strong>انتقل إلى رابط النظام</strong>
+        </li>
+        <li>
+            اضغط على أيقونة <strong>المشاركة</strong> (المربع مع السهم)
+        </li>
+        <li>
+            اختر <span class="key">إضافة إلى الشاشة الرئيسية</span>
+        </li>
+        <li>
+            اضغط <span class="key">إضافة</span>
+        </li>
+    </ol>
+    
+    <div class="callout warning">
+        <i class="fas fa-exclamation-triangle"></i>
+        <div class="callout-content">
+            <strong>تنبيه</strong>
+            لا تحذف التطبيق من سطح المكتب — لأن ذلك سيحذف البيانات المخزّنة محلياً (المبيعات غير المُزامَنة). تأكد من المزامنة أولاً.
+        </div>
+    </div>
+    
+    <div class="page-footer">
+        <span>MiraclePOS — دليل الاستخدام</span>
+        <span>4</span>
+    </div>
+</div>
+
+<!-- ============================================================
+     LOGIN & OPEN SHIFT
+     ============================================================ -->
+<div class="page">
+    <h2>3. تسجيل الدخول وفتح الوردية</h2>
+    
+    <h3>أ. تسجيل الدخول</h3>
+    
+    <div class="screenshot">
+        <i class="fas fa-sign-in-alt"></i>
+        <div class="label">شاشة تسجيل الدخول</div>
+        <div class="hint">أدخل البريد الإلكتروني وكلمة المرور</div>
+    </div>
+    
+    <ol class="steps">
+        <li>
+            افتح التطبيق من سطح المكتب
+        </li>
+        <li>
+            أدخل <span class="key">البريد الإلكتروني</span> (مثال: <code>admin@miraclepos.test</code>)
+        </li>
+        <li>
+            أدخل <span class="key">كلمة المرور</span>
+        </li>
+        <li>
+            اضغط <span class="key">دخول</span>
+        </li>
+    </ol>
+    
+    <div class="callout info">
+        <i class="fas fa-info-circle"></i>
+        <div class="callout-content">
+            <strong>أول مرة</strong>
+            في المرة الأولى، سيُطلب منك الموافقة على شروط الاستخدام (EULA). اقرأها واضغط "أوافق" للمتابعة.
+        </div>
+    </div>
+    
+    <h3>ب. فتح الوردية</h3>
+    
+    <p>
+        الوردية هي "جلسة عمل" — تخبر النظام أن الموظف بدأ عمله. لا يمكن البدء في البيع بدون فتح وردية.
+    </p>
+    
+    <div class="screenshot">
+        <i class="fas fa-cash-register"></i>
+        <div class="label">شاشة فتح الوردية</div>
+        <div class="hint">أدخل الرصيد الافتتاحي للدرج</div>
+    </div>
+    
+    <ol class="steps">
+        <li>
+            <strong>أدخل الرصيد الافتتاحي</strong> — المبلغ النقدي الموجود في الدرج قبل بدء العمل (مثلاً: 5000 ج.س)
+        </li>
+        <li>
+            <strong>اضغط "فتح الوردية"</strong>
+        </li>
+        <li>
+            <strong>انتظر</strong> — سيقوم النظام بتحميل الأدوية وتجهيز واجهة البيع. قد يستغرق 5-10 ثواني في المرة الأولى.
+        </li>
+        <li>
+            ستنتقل تلقائياً إلى <strong>نقطة البيع (POS)</strong>
+        </li>
+    </ol>
+    
+    <div class="callout success">
+        <i class="fas fa-check-circle"></i>
+        <div class="callout-content">
+            <strong>جاهز للبيع</strong>
+            بعد فتح الوردية، أنت جاهز لبدء البيع. لكن قبل ذلك، اتبع الخطوات التالية لإعداد الأدوية والأسعار (مرة واحدة فقط في البداية).
+        </div>
+    </div>
+    
+    <div class="page-footer">
+        <span>MiraclePOS — دليل الاستخدام</span>
+        <span>5</span>
+    </div>
+</div>
+
+<!-- ============================================================
+     ADD SUPPLIER & CATEGORY
+     ============================================================ -->
+<div class="page">
+    <h2>4. إضافة مورد جديد</h2>
+    
+    <p>
+        المورد هو الجهة التي تشتري منها الأدوية (شركة أدوية، موزّع، مصنع). تحتاج على الأقل مورداً واحداً لتسجيل فواتير الشراء.
+    </p>
+    
+    <ol class="steps">
+        <li>
+            من القائمة الجانبية → <strong>الموردين</strong>
+        </li>
+        <li>
+            اضغط <span class="key">إضافة مورد جديد</span>
+        </li>
+        <li>
+            املأ الحقول التالية
+        </li>
+    </ol>
+    
+    <table class="field-table">
+        <thead>
+            <tr>
+                <th>الحقل</th>
+                <th>الوصف</th>
+                <th>مثال</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="field-name">
+                    اسم المورد
+                    <span class="field-required">مطلوب</span>
+                </td>
+                <td>اسم الشركة أو الموزّع</td>
+                <td><code>شركة النيل للأدوية</code></td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    رقم الهاتف
+                    <span class="field-optional">اختياري</span>
+                </td>
+                <td>رقم التواصل مع المورد</td>
+                <td><code>0912345678</code></td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    البريد الإلكتروني
+                    <span class="field-optional">اختياري</span>
+                </td>
+                <td>البريد لمراسلة الفواتير</td>
+                <td><code>info@nile.com</code></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h2>5. إضافة تصنيف جديد</h2>
+    
+    <p>
+        التصنيف يساعدك على تنظيم الأدوية (مسكنات، مضادات حيوية، فيتامينات...). تُستخدم في البحث والتقارير.
+    </p>
+    
+    <ol class="steps">
+        <li>
+            من القائمة الجانبية → <strong>التصنيفات</strong>
+        </li>
+        <li>
+            اضغط <span class="key">إضافة تصنيف</span>
+        </li>
+        <li>
+            اكتب اسم التصنيف → اضغط <span class="key">حفظ</span>
+        </li>
+    </ol>
+    
+    <div class="callout tip">
+        <i class="fas fa-lightbulb"></i>
+        <div class="callout-content">
+            <strong>أمثلة على تصنيفات شائعة</strong>
+            مسكنات وخوافض حرارة • مضادات حيوية • فيتامينات ومكملات • أدوية الجهاز الهضمي • كريمات ومراهم • أدوية الأطفال
+        </div>
+    </div>
+    
+    <div class="page-footer">
+        <span>MiraclePOS — دليل الاستخدام</span>
+        <span>6</span>
+    </div>
+</div>
+
+<!-- ============================================================
+     ADD MEDICINE - IN DETAIL
+     ============================================================ -->
+<div class="page">
+    <h2>6. إضافة دواء جديد (بالتفصيل)</h2>
+    
+    <p>
+        هذه أهم خطوة في إعداد النظام. خصّصنا لها صفحتين لشرح كل حقل بدقة.
+    </p>
+    
+    <div class="screenshot">
+        <i class="fas fa-pills"></i>
+        <div class="label">شاشة إضافة دواء</div>
+        <div class="hint">من القائمة الجانبية → إدارة الأدوية → إضافة دواء جديد</div>
+    </div>
+    
+    <h3>الخطوة 1: البيانات الأساسية</h3>
+    
+    <ol class="steps">
+        <li>
+            من القائمة الجانبية → <strong>إدارة الأدوية</strong>
+        </li>
+        <li>
+            اضغط <span class="key">إضافة دواء جديد</span>
+        </li>
+    </ol>
+    
+    <table class="field-table">
+        <thead>
+            <tr>
+                <th>الحقل</th>
+                <th>الوصف</th>
+                <th>مثال</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="field-name">
+                    اسم الدواء
+                    <span class="field-required">مطلوب</span>
+                </td>
+                <td>الاسم التجاري كما هو مكتوب على العلبة</td>
+                <td><code>Panadol Extra</code></td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    التصنيف
+                    <span class="field-optional">اختياري</span>
+                </td>
+                <td>اختر من التصنيفات المضافة سابقاً</td>
+                <td><code>مسكنات وخوافض حرارة</code></td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    طريقة التسعير
+                    <span class="field-required">مطلوب</span>
+                </td>
+                <td>
+                    <strong>local</strong> — دواء محلي<br>
+                    <strong>imported</strong> — دواء مستورد
+                </td>
+                <td><code>imported</code></td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    قاعدة التسعير
+                    <span class="field-optional">اختياري</span>
+                </td>
+                <td>اختر قاعدة (مثل: "قاعدة ربح 40%"). إن تُركت فارغة، سيستخدم القاعدة الافتراضية.</td>
+                <td><code>قاعدة ربح 40%</code></td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    ملاحظات
+                    <span class="field-optional">اختياري</span>
+                </td>
+                <td>أي ملاحظات إضافية عن الدواء</td>
+                <td><code>يُصرف بوصفة طبية</code></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="page-footer">
+        <span>MiraclePOS — دليل الاستخدام</span>
+        <span>7</span>
+    </div>
+</div>
+
+<!-- ============================================================
+     ADD MEDICINE - UNITS & BARCODE
+     ============================================================ -->
+<div class="page">
+    <h3>الخطوة 2: وحدات البيع (أهم خطوة!)</h3>
+    
+    <p>
+        كل دواء له وحدات بيع متعددة. مثال: علبة تحتوي على 10 شرائط، وكل شريط يحتوي على 10 حبات. هذا يعني أن <strong>1 علبة = 100 حبة</strong>.
+    </p>
+    
+    <table class="field-table">
+        <thead>
+            <tr>
+                <th>الحقل</th>
+                <th>الوصف</th>
+                <th>مثال (للعلبة)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="field-name">
+                    الوحدة
+                    <span class="field-required">مطلوب</span>
+                </td>
+                <td>نوع الوحدة (علبة، شريط، حبة، قارورة، أنبوب)</td>
+                <td><code>علبة</code></td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    المعامل
+                    <span class="field-required">مطلوب</span>
+                </td>
+                <td>
+                    <strong>كم حبة في هذه الوحدة؟</strong>
+                    <br>• العلبة = 100 (تحتوي 100 حبة)
+                    <br>• الشريط = 10 (يحتوي 10 حبات)
+                    <br>• الحبة = 1 (الوحدة الأساسية)
+                </td>
+                <td><code>100</code></td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    الباركود
+                    <span class="field-optional">اختياري</span>
+                </td>
+                <td>
+                    باركود هذه الوحدة تحديداً
+                    <br>• إن كان الدواء له باركود على العلبة → امسحه هنا
+                    <br>• إن لم يكن له باركود → اتركه فارغاً
+                </td>
+                <td><code>6281234567890</code></td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    وحدة أساسية
+                    <span class="field-required">مطلوب (لواحدة فقط)</span>
+                </td>
+                <td>
+                    اختر <strong>واحدة فقط</strong> من الوحدات كوحدة أساسية — وعادة تكون أصغر وحدة (الحبة أو الشريط).
+                    <br>هذه الوحدة هي التي يُخزَّن بها المخزون ويُحسب بها الربح.
+                </td>
+                <td><code>☑ حبة</code></td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    السماح بالبيع
+                    <span class="field-optional">اختياري</span>
+                </td>
+                <td>هل يمكن بيع هذا الدواء بهذه الوحدة؟ عادةً نعم لكل الوحدات</td>
+                <td><code>☑ نعم</code></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="callout warning">
+        <i class="fas fa-exclamation-triangle"></i>
+        <div class="callout-content">
+            <strong>⚠️ تنويه مهم بخصوص الباركود الرئيسي</strong>
+            حقل "الباركود الرئيسي" في أعلى الصفحة <strong>يجب تركه فارغاً</strong> إن كان الباركود مرتبطاً بوحدة معينة (مثل العلبة).
+            <br><br>
+            السبب: الباركود في النظام مرتبط بالوحدة وليس بالدواء. كل وحدة (علبة، شريط، حبة) لها باركودها الخاص، وقد يكون لكل منها باركود مختلف.
+            <br><br>
+            <strong>القاعدة الذهبية:</strong> اترك حقل "الباركود الرئيسي" فارغاً، واملأ باركود كل وحدة في جدول الوحدات.
+        </div>
+    </div>
+    
+    <h3>مثال تطبيقي كامل</h3>
+    
+    <p>
+        افترض أنك تضيف دواء <strong>Panadol Extra</strong> الذي يأتي في علبة تحتوي على 10 شرائط، كل شريط فيه 10 حبات:
+    </p>
+    
+    <table class="field-table">
+        <thead>
+            <tr>
+                <th>الوحدة</th>
+                <th>المعامل</th>
+                <th>الباركود</th>
+                <th>أساسية؟</th>
+                <th>البيع مسموح؟</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>علبة</code></td>
+                <td><code>100</code></td>
+                <td><code>6281234567890</code></td>
+                <td>☐ لا</td>
+                <td>☑ نعم</td>
+            </tr>
+            <tr>
+                <td><code>شريط</code></td>
+                <td><code>10</code></td>
+                <td><code>6281234567891</code></td>
+                <td>☐ لا</td>
+                <td>☑ نعم</td>
+            </tr>
+            <tr>
+                <td><code>حبة</code></td>
+                <td><code>1</code></td>
+                <td><code>6281234567892</code></td>
+                <td>☑ <strong>نعم</strong></td>
+                <td>☑ نعم</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <p>
+        بهذه الإعدادات:
+        <br>• عند شراء <strong>10 علب</strong> → يُخزَّن <strong>1000 حبة</strong> في المخزون
+        <br>• عند بيع <strong>1 علبة</strong> → يُخصَم <strong>100 حبة</strong>
+        <br>• عند بيع <strong>1 شريط</strong> → يُخصَم <strong>10 حبات</strong>
+        <br>• عند بيع <strong>1 حبة</strong> → يُخصَم <strong>1 حبة</strong>
+    </p>
+    
+    <div class="page-footer">
+        <span>MiraclePOS — دليل الاستخدام</span>
+        <span>8</span>
+    </div>
+</div>
+
+<!-- ============================================================
+     PURCHASE INVOICE
+     ============================================================ -->
+<div class="page">
+    <h2>7. تسجيل فاتورة شراء</h2>
+    
+    <p>
+        بعد إضافة الأدوية، تحتاج لتسجيل فاتورة الشراء لإدخال الكميات والأسعار للمخزون.
+    </p>
+    
+    <div class="screenshot">
+        <i class="fas fa-shopping-cart"></i>
+        <div class="label">شاشة تسجيل فاتورة شراء</div>
+        <div class="hint">من القائمة الجانبية → المشتريات</div>
+    </div>
+    
+    <h3>الخطوة 1: بيانات الفاتورة</h3>
+    
+    <table class="field-table">
+        <thead>
+            <tr>
+                <th>الحقل</th>
+                <th>الوصف</th>
+                <th>مثال</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="field-name">
+                    المورد
+                    <span class="field-required">مطلوب</span>
+                </td>
+                <td>اختر المورد الذي اشتريت منه</td>
+                <td><code>شركة النيل للأدوية</code></td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    الفرع
+                    <span class="field-required">مطلوب</span>
+                </td>
+                <td>الفرع الذي ستُخزَّن فيه الكميات</td>
+                <td><code>الفرع الرئيسي</code></td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    رقم الفاتورة
+                    <span class="field-optional">اختياري</span>
+                </td>
+                <td>رقم الفاتورة الورقية من المورد</td>
+                <td><code>INV-2026-001</code></td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    تاريخ الشراء
+                    <span class="field-required">مطلوب</span>
+                </td>
+                <td>تاريخ الفاتورة (يُملأ تلقائياً باليوم)</td>
+                <td><code>2026-10-07</code></td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    الخصم
+                    <span class="field-optional">اختياري</span>
+                </td>
+                <td>أي خصم من المورد على إجمالي الفاتورة</td>
+                <td><code>50000</code></td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    ملاحظات
+                    <span class="field-optional">اختياري</span>
+                </td>
+                <td>أي ملاحظات إضافية</td>
+                <td><code>دفع آجل 30 يوم</code></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="page-footer">
+        <span>MiraclePOS — دليل الاستخدام</span>
+        <span>9</span>
+    </div>
+</div>
+
+<!-- ============================================================
+     PURCHASE ITEMS
+     ============================================================ -->
+<div class="page">
+    <h3>الخطوة 2: إضافة الأصناف</h3>
+    
+    <p>
+        لكل صنف في الفاتورة، ابحث عن الدواء، ثم املأ بيانات الشراء.
+    </p>
+    
+    <table class="field-table">
+        <thead>
+            <tr>
+                <th>الحقل</th>
+                <th>الوصف</th>
+                <th>مثال</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="field-name">
+                    البحث
+                    <span class="field-required">مطلوب</span>
+                </td>
+                <td>ابحث باسم الدواء أو امسح الباركود</td>
+                <td><code>Panadol</code></td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    الوحدة
+                    <span class="field-required">مطلوب</span>
+                </td>
+                <td>وحدة الشراء (عادة العلبة). ستظهر تلقائياً من إعدادات الدواء.</td>
+                <td><code>علبة</code></td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    الكمية
+                    <span class="field-required">مطلوب</span>
+                </td>
+                <td>عدد الوحدات المشتراة</td>
+                <td><code>10</code></td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    سعر الشراء
+                    <span class="field-required">مطلوب</span>
+                </td>
+                <td>سعر الوحدة الواحدة (العلبة) — كما هو مكتوب في الفاتورة</td>
+                <td><code>15000</code></td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    سعر الوحدة الأساسية
+                    <span class="field-required">يُحسب تلقائياً</span>
+                </td>
+                <td>يُحسب تلقائياً بقسمة سعر الشراء على المعامل</td>
+                <td><code>15000 ÷ 100 = 150</code></td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    رقم الدفعة (LOT)
+                    <span class="field-required">مطلوب</span>
+                </td>
+                <td>رقم التشغيلة الموجود على العلبة</td>
+                <td><code>B2026-045</code></td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    تاريخ الصلاحية
+                    <span class="field-required">مطلوب</span>
+                </td>
+                <td>تاريخ انتهاء الصلاحية (EXP)</td>
+                <td><code>2027-10-01</code></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <ol class="steps">
+        <li>بعد ملء كل الحقول، اضغط <span class="key">إضافة الصنف</span></li>
+        <li>سيظهر الصنف في الجدول أسفل الصفحة</li>
+        <li>كرر لكل دواء في الفاتورة</li>
+        <li>بعد الانتهاء، اضغط <span class="key">حفظ الفاتورة</span></li>
+    </ol>
+    
+    <div class="callout success">
+        <i class="fas fa-check-circle"></i>
+        <div class="callout-content">
+            <strong>ما حدث بعد الحفظ؟</strong>
+            • تم إضافة الكميات للمخزون
+            • تم إنشاء دفعات (Batches) تلقائياً
+            • تم حساب أسعار البيع آلياً حسب قاعدة التسعير
+        </div>
+    </div>
+    
+    <div class="page-footer">
+        <span>MiraclePOS — دليل الاستخدام</span>
+        <span>10</span>
+    </div>
+</div>
+
+<!-- ============================================================
+     PRICE REVIEW - CRITICAL
+     ============================================================ -->
+<div class="page">
+    <h2>8. معاينة وتعديل الأسعار (خطوة حاسمة!)</h2>
+    
+    <div class="callout danger">
+        <i class="fas fa-fire"></i>
+        <div class="callout-content">
+            <strong>⚠️ مهم جداً — لا تتجاوز هذه الخطوة</strong>
+            بعد حفظ فاتورة الشراء، النظام يحسب أسعار البيع تلقائياً. لكن <strong>قبل البدء في البيع</strong>، يجب عليك <strong>معاينة الأسعار وتعديلها</strong> لتتأكد من أنها صحيحة.
+            <br><br>
+            <strong>لماذا؟</strong> لأن بعض الأدوية قد تحتاج هوامش ربح مختلفة، أو أسعار تقريب مختلفة، أو تعديلات يدوية.
+        </div>
+    </div>
+    
+    <h3>كيف تعاين وتعدل الأسعار؟</h3>
+    
+    <ol class="steps">
+        <li>
+            من القائمة الجانبية → <strong>محرك الأسعار</strong>
+        </li>
+        <li>
+            اضغط على زر <span class="key">إعادة حساب شاملة</span>
+        </li>
+        <li>
+            ستظهر نافذة تعرض كل الأسعار الحالية مع تفاصيل كل سعر:
+            <br>• الاسم الدواء
+            <br>• السعر القديم
+            <br>• السعر الجديد (بعد إعادة الحساب)
+            <br>• الفرق
+        </li>
+        <li>
+            راجع الأسعار — إذا كان سعر معين غير صحيح، عدّله يدوياً
+        </li>
+        <li>
+            بعد المراجعة، اضغط <span class="key">تطبيق</span> لتأكيد التعديلات
+        </li>
+    </ol>
+    
+    <h3>ما يفعله "إعادة حساب شاملة"؟</h3>
+    
+    <table class="field-table">
+        <thead>
+            <tr>
+                <th>الوظيفة</th>
+                <th>الشرح</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="field-name">مراجعة الأسعار</td>
+                <td>يعرض كل الأسعار الحالية ويقارنها مع الأسعار الجديدة المحسوبة حسب قواعد التسعير</td>
+            </tr>
+            <tr>
+                <td class="field-name">تعديل جماعي</td>
+                <td>يسمح بتعديل أسعار عدة أدوية في نفس الوقت</td>
+            </tr>
+            <tr>
+                <td class="field-name">قفل الأسعار</td>
+                <td>يسمح بقفل سعر معين (مثلاً: دواء سعره ثابت من الوزارة)</td>
+            </tr>
+            <tr>
+                <td class="field-name">تطبيق القواعد</td>
+                <td>يطبّق قواعد التسعير الجديدة على كل الأدوية المتأثرة</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="callout tip">
+        <i class="fas fa-lightbulb"></i>
+        <div class="callout-content">
+            <strong>نصيحة ذهبية</strong>
+            بعد أي إضافة أدوية جديدة، ارجع إلى محرك الأسعار وأعد المراجعة. خاصة إذا كنت قد أضفت قواعد تسعير جديدة.
+        </div>
+    </div>
+    
+    <div class="page-footer">
+        <span>MiraclePOS — دليل الاستخدام</span>
+        <span>11</span>
+    </div>
+</div>
+
+<!-- ============================================================
+     START SELLING
+     ============================================================ -->
+<div class="page">
+    <h2>9. البدء في البيع</h2>
+    
+    <div class="callout success">
+        <i class="fas fa-trophy"></i>
+        <div class="callout-content">
+            <strong>مبروك! أنت جاهز للبيع</strong>
+            اتبعت كل الخطوات — الآن انتقل إلى نقطة البيع وابدأ أول عملية بيع.
+        </div>
+    </div>
+    
+    <h3>ملخص دليل البدء السريع</h3>
+    
+    <table class="field-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>الخطوة</th>
+                <th>الحالة</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>تثبيت النظام (PWA)</td>
+                <td><span class="badge badge-success">تم</span></td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>تسجيل الدخول</td>
+                <td><span class="badge badge-success">تم</span></td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>فتح وردية جديدة</td>
+                <td><span class="badge badge-success">تم</span></td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>إضافة مورد</td>
+                <td><span class="badge badge-success">تم</span></td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>إضافة تصنيفات</td>
+                <td><span class="badge badge-success">تم</span></td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>إضافة أدوية</td>
+                <td><span class="badge badge-success">تم</span></td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>تسجيل فاتورة شراء</td>
+                <td><span class="badge badge-success">تم</span></td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>معاينة الأسعار وتعديلها</td>
+                <td><span class="badge badge-warning">مهم!</span></td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>البدء في البيع</td>
+                <td><span class="badge badge-primary">الآن</span></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h3>خطوات البيع الأولى</h3>
+    
+    <ol class="steps">
+        <li>
+            من واجهة POS → ابحث عن دواء بالاسم أو الباركود
+        </li>
+        <li>
+            اضغط على الدواء → يظهر في السلة
+        </li>
+        <li>
+            كرر للأدوية الأخرى
+        </li>
+        <li>
+            اختر طريقة الدفع (نقدي / بنكي)
+        </li>
+        <li>
+            اضغط <span class="key">إتمام الدفع</span>
+        </li>
+        <li>
+            ستُطبع الفاتورة تلقائياً (إن كانت الطباعة مفعّلة)
+        </li>
+    </ol>
+    
+    <div class="callout info">
+        <i class="fas fa-book-open"></i>
+        <div class="callout-content">
+            <strong>انتقل الآن للقسم الثاني</strong>
+            في القسم التالي ستجد شرحاً مفصلاً لكل واجهات النظام — لوحة التحكم، التقارير، الديون، وغيرها.
+        </div>
+    </div>
+    
+    <div class="page-footer">
+        <span>MiraclePOS — دليل الاستخدام</span>
+        <span>12</span>
+    </div>
+</div>
+
+<!-- ============================================================
+     SECTION 2 COVER
+     ============================================================ -->
+<div class="page cover" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #3b82f6 100%);">
+    <div class="cover-logo">📚</div>
+    <h1>القسم <span style="color: #93c5fd;">الثاني</span></h1>
+    <div class="subtitle">شرح مفصل للنظام</div>
+    <div class="desc">
+        كل واجهات لوحة التحكم + واجهة البيع
+    </div>
+    
+    <div class="cover-meta">
+        <div>
+            <div class="num">8</div>
+            <div class="lbl">أقسام رئيسية</div>
+        </div>
+        <div>
+            <div class="num">40+</div>
+            <div class="lbl">شاشة مشروحة</div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     DASHBOARD OVERVIEW
+     ============================================================ -->
+<div class="page">
+    <div class="section-header" style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);">
+        <i class="fas fa-gauge-high"></i>
+        <div class="header-text">
+            <h2>10. لوحة التحكم — نظرة عامة</h2>
+            <p>نقطة البداية لكل العمليات الإدارية</p>
+        </div>
+    </div>
+    
+    <p>
+        لوحة التحكم هي المركز الرئيسي لإدارة النظام. من هنا يمكنك الوصول إلى جميع الوظائف: إدارة الأدوية، الفروع، المستخدمين، التقارير، والإعدادات.
+    </p>
+    
+    <div class="screenshot">
+        <i class="fas fa-chart-pie"></i>
+        <div class="label">لوحة التحكم الرئيسية</div>
+        <div class="hint">تظهر بعد تسجيل الدخول كمدير</div>
+    </div>
+    
+    <h3>الأقسام الرئيسية في القائمة الجانبية</h3>
+    
+    <table class="field-table">
+        <thead>
+            <tr>
+                <th>القسم</th>
+                <th>الوصف</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="field-name">
+                    <i class="fas fa-th-large" style="color: #10b981;"></i>
+                    الرئيسية
+                </td>
+                <td>نظرة عامة على الأداء — مبيعات اليوم، الأرباح، التنبيهات، آخر الفواتير</td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    <i class="fas fa-pills" style="color: #10b981;"></i>
+                    إدارة الأدوية
+                </td>
+                <td>إضافة/تعديل الأدوية، الوحدات، الباركود، قواعد التسعير</td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    <i class="fas fa-shopping-cart" style="color: #10b981;"></i>
+                    المشتريات
+                </td>
+                <td>تسجيل فواتير الشراء من الموردين، إدارة الدفعات</td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    <i class="fas fa-clipboard-list" style="color: #10b981;"></i>
+                    الجرد
+                </td>
+                <td>متابعة المخزون الفعلي، تعديل الكميات، الفروقات</td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    <i class="fas fa-user-clock" style="color: #10b981;"></i>
+                    الورديات
+                </td>
+                <td>متابعة ورديات الموظفين، الحركة النقدية، الفروقات</td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    <i class="fas fa-file-invoice-dollar" style="color: #10b981;"></i>
+                    الديون
+                </td>
+                <td>متابعة ديون العملاء، سجل السداد، المتبقي</td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    <i class="fas fa-wallet" style="color: #10b981;"></i>
+                    المصروفات
+                </td>
+                <td>تسجيل المصروفات اليومية (إيجار، كهرباء، صيانة)</td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    <i class="fas fa-hand-holding-usd" style="color: #10b981;"></i>
+                    الرواتب
+                </td>
+                <td>إنشاء وصرف رواتب الموظفين</td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    <i class="fas fa-dollar-sign" style="color: #10b981;"></i>
+                    محرك الأسعار
+                </td>
+                <td>إدارة قواعد التسعير، إعادة الحساب الشامل</td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    <i class="fas fa-chart-line" style="color: #10b981;"></i>
+                    التقارير المالية
+                </td>
+                <td>تقارير شاملة — يومية، أسبوعية، شهرية، سنوية</td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    <i class="fas fa-chart-bar" style="color: #10b981;"></i>
+                    التحليلات
+                </td>
+                <td>تحليلات متقدمة — التوقعات، ساعات الذروة، أفضل الأدوية</td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    <i class="fas fa-code-branch" style="color: #10b981;"></i>
+                    الفروع
+                </td>
+                <td>إدارة فروع الصيدلية</td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    <i class="fas fa-tags" style="color: #10b981;"></i>
+                    التصنيفات
+                </td>
+                <td>تصنيفات الأدوية</td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    <i class="fas fa-truck" style="color: #10b981;"></i>
+                    الموردين
+                </td>
+                <td>إدارة الموردين</td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    <i class="fas fa-users" style="color: #10b981;"></i>
+                    المستخدمين
+                </td>
+                <td>إدارة الموظفين والصلاحيات</td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    <i class="fas fa-clipboard-check" style="color: #10b981;"></i>
+                    سجل التدقيق
+                </td>
+                <td>سجل كامل لكل العمليات الحساسة</td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    <i class="fas fa-database" style="color: #10b981;"></i>
+                    النسخ الاحتياطي
+                </td>
+                <td>إنشاء واستعادة النسخ الاحتياطية</td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    <i class="fas fa-cog" style="color: #10b981;"></i>
+                    الإعدادات
+                </td>
+                <td>إعدادات النظام العامة — الاسم، الشعار، الطباعة، PIN</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="page-footer">
+        <span>MiraclePOS — دليل الاستخدام</span>
+        <span>14</span>
+    </div>
+</div>
+
+<!-- ============================================================
+     INVENTORY MANAGEMENT
+     ============================================================ -->
+<div class="page">
+    <h2>11. إدارة المخزون</h2>
+    
+    <p>
+        من القائمة الجانبية → <strong>الجرد</strong>
+    </p>
+    
+    <p>
+        هذه الشاشة تعرض كل الأدوية الموجودة في المخزون مع الكميات الحالية، الحد الأدنى، وحالة كل صنف.
+    </p>
+    
+    <h3>معلومات الجدول</h3>
+    
+    <table class="field-table">
+        <thead>
+            <tr>
+                <th>العمود</th>
+                <th>الوصف</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="field-name">الدواء</td>
+                <td>اسم الدواء مع التصنيف</td>
+            </tr>
+            <tr>
+                <td class="field-name">الكمية الحالية</td>
+                <td>الكمية المتوفرة (بالوحدة الأساسية)</td>
+            </tr>
+            <tr>
+                <td class="field-name">الحد الأدنى</td>
+                <td>الحد الذي إذا وصلت إليه الكمية، يظهر تنبيه</td>
+            </tr>
+            <tr>
+                <td class="field-name">الحالة</td>
+                <td>
+                    <span class="badge badge-success">متوفر</span>
+                    <span class="badge badge-warning">منخفض</span>
+                    <span class="badge badge-danger">نفذ</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-name">آخر تحديث</td>
+                <td>تاريخ آخر حركة على هذا الصنف</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h3>تعديل الكمية يدوياً (الجرد الفعلي)</h3>
+    
+    <ol class="steps">
+        <li>ابحث عن الصنف في الجدول</li>
+        <li>اضغط زر <span class="key">تعديل</span> في نفس السطر</li>
+        <li>أدخل الكمية الفعلية بعد العد</li>
+        <li>أضف سبب التعديل (اختياري)</li>
+        <li>اضغط <span class="key">حفظ</span></li>
+    </ol>
+    
+    <div class="callout info">
+        <i class="fas fa-info-circle"></i>
+        <div class="callout-content">
+            <strong>ملاحظة</strong>
+            الجرد الفعلي يحدث فرقاً بين الكمية المسجلة والكمية الحقيقية. هذا الفرق يُسجَّل في <strong>سجل التدقيق</strong> لأغراض المراجعة.
+        </div>
+    </div>
+    
+    <h3>الفلاتر المتاحة</h3>
+    
+    <ul style="padding-right: 25px; color: #475569;">
+        <li><strong>الفرع</strong> — عرض مخزون فرع معين</li>
+        <li><strong>البحث</strong> — ابحث بالاسم أو الباركود</li>
+        <li><strong>الحالة</strong> — متوفر / منخفض / نفذ</li>
+        <li><strong>التصنيف</strong> — تصفية حسب التصنيف</li>
+    </ul>
+    
+    <div class="page-footer">
+        <span>MiraclePOS — دليل الاستخدام</span>
+        <span>16</span>
+    </div>
+</div>
+
+<!-- ============================================================
+     SHIFTS & CASH
+     ============================================================ -->
+<div class="page">
+    <h2>12. الورديات والدرج</h2>
+    
+    <p>
+        من القائمة الجانبية → <strong>الورديات</strong>
+    </p>
+    
+    <p>
+        الوردية هي فترة عمل الموظف. تبدأ بفتح الوردية (برصيد افتتاحي) وتنتهي بإغلاقها (بعدّ الدرج ومقارنته مع الرصيد المتوقع).
+    </p>
+    
+    <h3>معلومات الجدول</h3>
+    
+    <table class="field-table">
+        <thead>
+            <tr>
+                <th>العمود</th>
+                <th>الوصف</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="field-name">رقم الوردية</td>
+                <td>معرّف فريد للوردية</td>
+            </tr>
+            <tr>
+                <td class="field-name">الموظف</td>
+                <td>اسم من فتح الوردية</td>
+            </tr>
+            <tr>
+                <td class="field-name">الحالة</td>
+                <td>
+                    <span class="badge badge-success">مفتوحة</span>
+                    <span class="badge badge-info">مغلقة</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field-name">الرصيد الافتتاحي</td>
+                <td>المبلغ النقدي عند بدء الوردية</td>
+            </tr>
+            <tr>
+                <td class="field-name">المبيعات النقدية</td>
+                <td>مجموع المبيعات النقدية</td>
+            </tr>
+            <tr>
+                <td class="field-name">المبيعات البنكية</td>
+                <td>مجموع المبيعات بالبطاقة / البنك</td>
+            </tr>
+            <tr>
+                <td class="field-name">الرصيد المتوقع</td>
+                <td>الرصيد الذي يجب أن يكون في الدرج (محسوب آلياً)</td>
+            </tr>
+            <tr>
+                <td class="field-name">الرصيد الفعلي</td>
+                <td>الرصيد بعد العد الفعلي</td>
+            </tr>
+            <tr>
+                <td class="field-name">الفرق</td>
+                <td>
+                    <span style="color: #10b981; font-weight: 700;">مطابق</span> —
+                    <span style="color: #f59e0b; font-weight: 700;">زيادة</span> —
+                    <span style="color: #dc2626; font-weight: 700;">عجز</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h3>كيفية حساب الرصيد المتوقع</h3>
+    
+    <div style="background: #f8fafc; padding: 20px; border-radius: 12px; border-right: 4px solid #10b981; margin: 20px 0; font-family: monospace; font-size: 13px; line-height: 2;">
+        <strong style="font-family: 'Cairo', sans-serif;">الرصيد المتوقع</strong> = الرصيد الافتتاحي<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ المبيعات النقدية<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ سداد الديون<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;− السحوبات<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;− المصروفات<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;− المرتجعات النقدية
+    </div>
+    
+    <div class="callout warning">
+        <i class="fas fa-exclamation-triangle"></i>
+        <div class="callout-content">
+            <strong>تحذير</strong>
+            الفرق بين الرصيد المتوقع والفعلي مهم جداً. أي عجز يعني نقص في الدرج، وأي زيادة تعني خطأ في التسجيل. راجع التفاصيل بعناية.
+        </div>
+    </div>
+    
+    <div class="page-footer">
+        <span>MiraclePOS — دليل الاستخدام</span>
+        <span>18</span>
+    </div>
+</div>
+
+<!-- ============================================================
+     DEBTS
+     ============================================================ -->
+<div class="page">
+    <h2>13. الديون والعملاء</h2>
+    
+    <p>
+        من القائمة الجانبية → <strong>الديون</strong>
+    </p>
+    
+    <p>
+        هذه الشاشة تجمع كل أنواع الديون: ديون العملاء، ديون الشركات، سحوبات الموظفين، وسحوبات الدرج.
+    </p>
+    
+    <h3>أنواع الديون في النظام</h3>
+    
+    <table class="field-table">
+        <thead>
+            <tr>
+                <th>النوع</th>
+                <th>اللون</th>
+                <th>الوصف</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="field-name">
+                    <span class="badge badge-primary">دين فاتورة</span>
+                </td>
+                <td>أزرق</td>
+                <td>ديون ناتجة عن فواتير بيع آجلة للعملاء</td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    <span class="badge badge-warning">سحب من الدرج</span>
+                </td>
+                <td>أصفر</td>
+                <td>سحوبات نقدية من الدرج لأغراض تشغيلية</td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    <span class="badge badge-info">سحب موظف</span>
+                </td>
+                <td>وردي</td>
+                <td>سحوبات الموظفين (تُخصم من رواتبهم لاحقاً)</td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    <span class="badge badge-success">دين مخصص</span>
+                </td>
+                <td>بنفسجي</td>
+                <td>ديون مضافة يدوياً من قبل المدير</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h3>معلومات الجدول</h3>
+    
+    <ul style="padding-right: 25px; color: #475569; line-height: 2;">
+        <li><strong>الاسم</strong> — اسم العميل / الموظف</li>
+        <li><strong>النوع</strong> — نوع الدين</li>
+        <li><strong>الإجمالي</strong> — المبلغ الكلي للدين</li>
+        <li><strong>المدفوع</strong> — ما تم سداده</li>
+        <li><strong>المتبقي</strong> — ما تبقى</li>
+        <li><strong>الحالة</strong> — pending / partial / paid</li>
+        <li><strong>التاريخ</strong> — تاريخ إنشاء الدين</li>
+    </ul>
+    
+    <h3>تسجيل سداد</h3>
+    
+    <ol class="steps">
+        <li>اضغط على الدين في الجدول لعرض التفاصيل</li>
+        <li>اضغط زر <span class="key">تسجيل سداد</span></li>
+        <li>أدخل المبلغ (يمكن أن يكون جزئياً)</li>
+        <li>أضف ملاحظة (اختياري)</li>
+        <li>اضغط <span class="key">حفظ</span></li>
+    </ol>
+    
+    <div class="page-footer">
+        <span>MiraclePOS — دليل الاستخدام</span>
+        <span>20</span>
+    </div>
+</div>
+
+<!-- ============================================================
+     EXPENSES & SALARIES
+     ============================================================ -->
+<div class="page">
+    <h2>14. المصروفات والرواتب</h2>
+    
+    <h3>أ. المصروفات</h3>
+    
+    <p>
+        من القائمة الجانبية → <strong>المصروفات</strong>
+    </p>
+    
+    <p>
+        سجّل كل المصروفات التشغيلية اليومية. هناك نوعان:
+    </p>
+    
+    <table class="field-table">
+        <thead>
+            <tr>
+                <th>النوع</th>
+                <th>الوصف</th>
+                <th>المثال</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="field-name">مصروف وردية</td>
+                <td>يُخصم من درج الوردية المفتوحة</td>
+                <td>شراء أكياس، صيانة عاجلة</td>
+            </tr>
+            <tr>
+                <td class="field-name">مصروف إداري</td>
+                <td>غير مرتبط بوردية معينة</td>
+                <td>إيجار شهري، فاتورة كهرباء</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h4>لتسجيل مصروف:</h4>
+    
+    <ol class="steps">
+        <li>اضغط <span class="key">إضافة مصروف</span></li>
+        <li>أدخل البيان (الوصف)</li>
+        <li>أدخل المبلغ</li>
+        <li>أضف ملاحظات (اختياري)</li>
+        <li>اضغط <span class="key">حفظ</span></li>
+    </ol>
+    
+    <div class="divider"></div>
+    
+    <h3>ب. الرواتب</h3>
+    
+    <p>
+        من القائمة الجانبية → <strong>الرواتب</strong>
+    </p>
+    
+    <h4>إنشاء رواتب شهرية (تلقائي)</h4>
+    
+    <ol class="steps">
+        <li>اضغط <span class="key">توليد رواتب الشهر</span></li>
+        <li>اختر الشهر والسنة</li>
+        <li>سيقوم النظام بإنشاء سجلات رواتب لكل الموظفين النشطين</li>
+        <li>يمكنك بعدها تعديل الإضافات والخصومات لكل موظف</li>
+    </ol>
+    
+    <h4>صرف راتب</h4>
+    
+    <ol class="steps">
+        <li>اضغط زر <span class="key">صرف</span> بجانب الراتب</li>
+        <li>اختر طريقة الصرف (نقدي / بنكي)</li>
+        <li>أدخل البيانات البنكية إن كان بنكياً</li>
+        <li>اضغط <span class="key">تأكيد الصرف</span></li>
+    </ol>
+    
+    <div class="callout info">
+        <i class="fas fa-info-circle"></i>
+        <div class="callout-content">
+            <strong>ملاحظة</strong>
+            عند صرف راتب، يُنشئ النظام مصروفاً تلقائياً في سجل المصروفات. هذا يضمن أن كل العمليات المالية مترابطة.
+        </div>
+    </div>
+    
+    <div class="page-footer">
+        <span>MiraclePOS — دليل الاستخدام</span>
+        <span>22</span>
+    </div>
+</div>
+
+<!-- ============================================================
+     REPORTS & ANALYTICS
+     ============================================================ -->
+<div class="page">
+    <h2>15. التقارير والتحليلات</h2>
+    
+    <h3>أ. التقارير المالية</h3>
+    
+    <p>
+        من القائمة الجانبية → <strong>التقارير المالية</strong>
+    </p>
+    
+    <p>
+        تقارير شاملة حسب الفترة الزمنية والفرع:
+    </p>
+    
+    <table class="field-table">
+        <thead>
+            <tr>
+                <th>الفترة</th>
+                <th>المحتوى</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="field-name">يومي</td>
+                <td>ملخص اليوم — المبيعات، الأرباح، المصروفات، الصافي</td>
+            </tr>
+            <tr>
+                <td class="field-name">أسبوعي</td>
+                <td>ملخص الأسبوع مع مقارنة الأيام</td>
+            </tr>
+            <tr>
+                <td class="field-name">شهري</td>
+                <td>ملخص الشهر مع تفصيل يومي</td>
+            </tr>
+            <tr>
+                <td class="field-name">سنوي</td>
+                <td>ملخص السنة مع مقارنة الأشهر</td>
+            </tr>
+            <tr>
+                <td class="field-name">مخصص</td>
+                <td>اختر فترة مخصصة (من - إلى)</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h3>ما يشمله التقرير</h3>
+    
+    <ul style="padding-right: 25px; color: #475569; line-height: 2;">
+        <li><strong>إجمالي المبيعات</strong> — مجموع الفواتير</li>
+        <li><strong>إجمالي الأرباح</strong> — المبيعات ناقص تكلفة البضاعة</li>
+        <li><strong>المرتجعات</strong> — إجمالي الفواتير المرتجعة</li>
+        <li><strong>المصروفات</strong> — كل المصروفات في الفترة</li>
+        <li><strong>السحوبات</strong> — السحوبات النقدية</li>
+        <li><strong>المشتريات</strong> — فواتير الشراء</li>
+        <li><strong>سداد الديون</strong> — الدفعات المُستلمة</li>
+        <li><strong>الرواتب</strong> — الرواتب المصروفة</li>
+        <li><strong>صافي الربح</strong> — المبيعات − كل المصروفات</li>
+    </ul>
+    
+    <div class="divider"></div>
+    
+    <h3>ب. التحليلات المتقدمة</h3>
+    
+    <p>
+        من القائمة الجانبية → <strong>التحليلات</strong>
+    </p>
+    
+    <p>
+        تحليلات ذكية لدعم القرارات:
+    </p>
+    
+    <table class="field-table">
+        <thead>
+            <tr>
+                <th>القسم</th>
+                <th>الوصف</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="field-name">المؤشرات الرئيسية</td>
+                <td>مبيعات اليوم، الأسبوع، الشهر + الأرباح</td>
+            </tr>
+            <tr>
+                <td class="field-name">الرسوم البيانية</td>
+                <td>تطور المبيعات والأرباح شهرياً</td>
+            </tr>
+            <tr>
+                <td class="field-name">توزيع المخزون</td>
+                <td>مخزون منخفض، قرب الانتهاء، سليم</td>
+            </tr>
+            <tr>
+                <td class="field-name">تحليل الموردين</td>
+                <td>الموردين الأكثر تعاملاً</td>
+            </tr>
+            <tr>
+                <td class="field-name">ساعات الذروة</td>
+                <td>أكثر الأوقات مبيعاً</td>
+            </tr>
+            <tr>
+                <td class="field-name">الأكثر مبيعاً</td>
+                <td>أفضل 10 أدوية مبيعاً</td>
+            </tr>
+            <tr>
+                <td class="field-name">الأعلى ربحية</td>
+                <td>أفضل 10 أدوية ربحاً</td>
+            </tr>
+            <tr>
+                <td class="field-name">خطة الشراء</td>
+                <td>اقتراحات لكميات الشراء المثالية</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="page-footer">
+        <span>MiraclePOS — دليل الاستخدام</span>
+        <span>24</span>
+    </div>
+</div>
+
+<!-- ============================================================
+     SETTINGS & BACKUP
+     ============================================================ -->
+<div class="page">
+    <h2>16. الإعدادات والنسخ الاحتياطي</h2>
+    
+    <h3>أ. الإعدادات العامة</h3>
+    
+    <p>
+        من القائمة الجانبية → <strong>الإعدادات</strong>
+    </p>
+    
+    <table class="field-table">
+        <thead>
+            <tr>
+                <th>المجموعة</th>
+                <th>المحتوى</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="field-name">إعدادات الصيدلية</td>
+                <td>الاسم، الهاتف، العنوان، الرقم الضريبي، العملة، الشعار</td>
+            </tr>
+            <tr>
+                <td class="field-name">إعدادات الطباعة</td>
+                <td>تفعيل الطباعة، عرض الطابعة، الطباعة التلقائية</td>
+            </tr>
+            <tr>
+                <td class="field-name">نظام PIN</td>
+                <td>تفعيل PIN، طول PIN، الحماية لكل عملية</td>
+            </tr>
+            <tr>
+                <td class="field-name">الأمان</td>
+                <td>مدة انتهاء الجلسة، متطلبات كلمة المرور</td>
+            </tr>
+            <tr>
+                <td class="field-name">النسخ الاحتياطي</td>
+                <td>تفعيل النسخ التلقائي، عدد الأيام للاحتفاظ</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="divider"></div>
+    
+    <h3>ب. النسخ الاحتياطي</h3>
+    
+    <p>
+        من القائمة الجانبية → <strong>النسخ الاحتياطي</strong>
+    </p>
+    
+    <h4>إنشاء نسخة احتياطية يدوية</h4>
+    
+    <ol class="steps">
+        <li>اضغط <span class="key">إنشاء نسخة احتياطية</span></li>
+        <li>انتظر انتهاء العملية (قد تستغرق دقيقة)</li>
+        <li>ستظهر النسخة في القائمة مع تاريخها وحجمها</li>
+    </ol>
+    
+    <h4>تنزيل نسخة احتياطية</h4>
+    
+    <ol class="steps">
+        <li>ابحث عن النسخة في القائمة</li>
+        <li>اضغط زر <span class="key">تنزيل</span></li>
+        <li>سيتم تنزيل ملف مضغوط (ZIP) يحتوي على قاعدة البيانات</li>
+    </ol>
+    
+    <div class="callout danger">
+        <i class="fas fa-exclamation-triangle"></i>
+        <div class="callout-content">
+            <strong>⚠️ تحذير</strong>
+            استعادة نسخة احتياطية <strong>تستبدل كل البيانات الحالية</strong>! تأكد من أنك متأكد 100% قبل التنفيذ.
+        </div>
+    </div>
+    
+    <h4>النسخ التلقائي</h4>
+    
+    <p>
+        النظام يُنشئ نسخة احتياطية تلقائياً كل يوم الساعة 11:59 مساءً، ويحتفظ بآخر 30 نسخة.
+    </p>
+    
+    <div class="page-footer">
+        <span>MiraclePOS — دليل الاستخدام</span>
+        <span>26</span>
+    </div>
+</div>
+
+<!-- ============================================================
+     POS INTERFACE
+     ============================================================ -->
+<div class="page">
+    <h2>17. واجهة البيع (POS)</h2>
+    
+    <p>
+        واجهة البيع هي المكان الذي يقضي فيه الموظف معظم وقته. صُممت لتكون سريعة وسهلة.
+    </p>
+    
+    <div class="screenshot">
+        <i class="fas fa-cash-register"></i>
+        <div class="label">واجهة البيع (POS)</div>
+        <div class="hint">الشاشة الرئيسية للموظف</div>
+    </div>
+    
+    <h3>مكونات الواجهة</h3>
+    
+    <table class="field-table">
+        <thead>
+            <tr>
+                <th>المنطقة</th>
+                <th>الوظيفة</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="field-name">الشريط العلوي</td>
+                <td>معلومات الوردية الحالية (الدرج، المبيعات، عدد الفواتير) + زر مالية + تسجيل الخروج</td>
+            </tr>
+            <tr>
+                <td class="field-name">القائمة الجانبية اليمنى</td>
+                <td>آخر المبيعات (مع إمكانية الإرجاع)</td>
+            </tr>
+            <tr>
+                <td class="field-name">المنطقة الوسطى</td>
+                <td>البحث وإضافة الأدوية</td>
+            </tr>
+            <tr>
+                <td class="field-name">القائمة اليسرى</td>
+                <td>سلة التسوق + الإجمالي + إتمام الدفع</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h3>خطوات البيع</h3>
+    
+    <ol class="steps">
+        <li>
+            <strong>ابحث عن الدواء</strong> — بالاسم أو امسح الباركود
+        </li>
+        <li>
+            <strong>اختر الوحدة</strong> — إذا كان للدواء عدة وحدات، ستظهر قائمة اختيار
+        </li>
+        <li>
+            <strong>اضبط الكمية</strong> — في السلة، اضغط + أو −
+        </li>
+        <li>
+            <strong>أضف خصم على بند</strong> — إذا كنت تريد خصماً على صنف معين
+        </li>
+        <li>
+            <strong>أضف خصم على الفاتورة</strong> — إذا كنت تريد خصماً على الإجمالي
+        </li>
+        <li>
+            <strong>اختر طريقة الدفع</strong> — نقدي أو بنكي
+        </li>
+        <li>
+            <strong>اضغط إتمام الدفع</strong>
+        </li>
+    </ol>
+    
+    <div class="callout success">
+        <i class="fas fa-check-circle"></i>
+        <div class="callout-content">
+            <strong>بعد البيع</strong>
+            • تُطبع الفاتورة تلقائياً (إن كانت الطباعة مفعلة)
+            <br>• يُخصم المخزون فوراً
+            <br>• يُحدَّث رصيد الوردية
+            <br>• تُضاف الفاتورة إلى "آخر المبيعات"
+        </div>
+    </div>
+    
+    <div class="page-footer">
+        <span>MiraclePOS — دليل الاستخدام</span>
+        <span>28</span>
+    </div>
+</div>
+
+<!-- ============================================================
+     POS - ADDITIONAL OPERATIONS
+     ============================================================ -->
+<div class="page">
+    <h3>العمليات المالية في POS</h3>
+    
+    <p>
+        من زر <span class="key">مالية</span> في الشريط العلوي، يمكنك تنفيذ:
+    </p>
+    
+    <table class="field-table">
+        <thead>
+            <tr>
+                <th>العملية</th>
+                <th>الوصف</th>
+                <th>التأثير على الدرج</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="field-name">
+                    <i class="fas fa-receipt" style="color: #dc2626;"></i>
+                    إضافة مصروف
+                </td>
+                <td>تسجيل مصروف من الدرج</td>
+                <td style="color: #dc2626; font-weight: 700;">− (نقص)</td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    <i class="fas fa-hand-holding-usd" style="color: #f59e0b;"></i>
+                    سحب نقدي
+                </td>
+                <td>سحب نقدي من الدرج (يُنشئ دين على الموظف)</td>
+                <td style="color: #dc2626; font-weight: 700;">− (نقص)</td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    <i class="fas fa-hand-holding-heart" style="color: #10b981;"></i>
+                    سداد دين
+                </td>
+                <td>استلام دفعة من دين سابق</td>
+                <td style="color: #10b981; font-weight: 700;">+ (زيادة)</td>
+            </tr>
+            <tr>
+                <td class="field-name">
+                    <i class="fas fa-door-closed" style="color: #dc2626;"></i>
+                    إنهاء الوردية
+                </td>
+                <td>إغلاق الوردية وعدّ الدرج</td>
+                <td>—</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h3>الإرجاع</h3>
+    
+    <ol class="steps">
+        <li>من قائمة "آخر المبيعات" → اضغط على الفاتورة</li>
+        <li>ستظهر تفاصيل الفاتورة مع كل الأصناف</li>
+        <li>لكل صنف، أدخل الكمية المراد إرجاعها</li>
+        <li>اضغط <span class="key">إرجاع</span></li>
+        <li>سيتم استرداد المبلغ وإضافة الكميات للمخزون</li>
+    </ol>
+    
+    <div class="callout warning">
+        <i class="fas fa-exclamation-triangle"></i>
+        <div class="callout-content">
+            <strong>ملاحظة</strong>
+            لا يمكن إرجاع كمية أكبر من الكمية المتبقية من الفاتورة. النظام يمنع ذلك تلقائياً.
+        </div>
+    </div>
+    
+    <h3>إغلاق الوردية</h3>
+    
+    <ol class="steps">
+        <li>من زر مالية → <span class="key">إنهاء الوردية</span></li>
+        <li>ستظهر شاشة ملخص الوردية مع:
+            <br>• الرصيد الافتتاحي
+            <br>• المبيعات النقدية
+            <br>• سداد الديون
+            <br>• السحوبات والمصروفات
+            <br>• الرصيد المتوقع
+        </li>
+        <li>عدّ النقود في الدرج، وأدخل <strong>الرصيد الفعلي</strong></li>
+        <li>سيظهر الفرق تلقائياً:
+            <br>• <span style="color: #10b981; font-weight: 700;">مطابق</span> — لا فرق
+            <br>• <span style="color: #f59e0b; font-weight: 700;">زيادة</span> — المبلغ أكبر من المتوقع
+            <br>• <span style="color: #dc2626; font-weight: 700;">عجز</span> — المبلغ أقل من المتوقع
+        </li>
+        <li>اضغط <span class="key">إنهاء الوردية</span> للتأكيد</li>
+    </ol>
+    
+    <div class="page-footer">
+        <span>MiraclePOS — دليل الاستخدام</span>
+        <span>29</span>
+    </div>
+</div>
+
+<!-- ============================================================
+     END PAGE
+     ============================================================ -->
+<div class="page cover" style="background: linear-gradient(135deg, #0f172a 0%, #064e3b 50%, #10b981 100%);">
+    <div class="cover-logo">✓</div>
+    <h1>نهاية <span>الدليل</span></h1>
+    <div class="subtitle">شكراً لاستخدامك MiraclePOS</div>
+    <div class="desc">
+        إذا واجهت أي مشكلة، تواصل مع فريق الدعم الفني.
+    </div>
+    
+    <div class="cover-meta">
+        <div>
+            <div class="num"><i class="fas fa-phone" style="font-size: 22px; color: #34d399;"></i></div>
+            <div class="lbl">واتساب: 0907722829</div>
+        </div>
+        <div>
+            <div class="num"><i class="fas fa-envelope" style="font-size: 22px; color: #34d399;"></i></div>
+            <div class="lbl">support@miraclepos.test</div>
+        </div>
+    </div>
+    
+    <div class="cover-footer">
+        © 2026 MiraclePOS — جميع الحقوق محفوظة
+    </div>
+</div>
+
+</body>
+</html>

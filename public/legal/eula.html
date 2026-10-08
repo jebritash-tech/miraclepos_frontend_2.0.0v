@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>اتفاقية الترخيص — MiraclePOS</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; touch-action: manipulation; }
+    body {
+      font-family: 'Cairo', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%);
+      color: #1e293b;
+      line-height: 1.9;
+      padding: 24px 16px 40px;
+      min-height: 100vh;
+      touch-action: manipulation;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(15, 23, 42, 0.08);
+    }
+    .header {
+      text-align: center;
+      padding: 32px 40px 24px;
+      background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+      color: #fff;
+    }
+    .header-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.15);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .header h1 { font-size: 24px; font-weight: 800; margin-bottom: 6px; }
+    .header p { font-size: 13.5px; opacity: 0.9; }
+    .content-wrap { padding: 32px 40px 24px; }
+    .last-update {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #faf5ff;
+      color: #6d28d9;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 12.5px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      border: 1px solid #e9d5ff;
+    }
+    .info {
+      background: #faf5ff;
+      border-right: 4px solid #a855f7;
+      padding: 14px 18px;
+      border-radius: 10px;
+      margin: 16px 0 24px;
+      font-size: 13.5px;
+      color: #4c1d95;
+      line-height: 1.7;
+    }
+    .content-scroll {
+      max-height: 380px;
+      overflow-y: auto;
+      padding: 20px 8px 4px 0;
+      margin-bottom: 20px;
+      border-top: 1px solid #f1f5f9;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .content-scroll::-webkit-scrollbar { width: 8px; }
+    .content-scroll::-webkit-scrollbar-track { background: #f8fafc; border-radius: 4px; }
+    .content-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    h2 {
+      font-size: 17px;
+      font-weight: 800;
+      color: #1e293b;
+      margin: 24px 0 10px;
+      padding-right: 14px;
+      border-right: 4px solid #a855f7;
+      line-height: 1.4;
+    }
+    h2:first-child { margin-top: 0; }
+    p { margin-bottom: 12px; font-size: 14px; color: #475569; }
+    ul, ol { padding-right: 24px; margin-bottom: 12px; }
+    li { margin-bottom: 6px; font-size: 14px; color: #475569; }
+    strong { color: #1e293b; font-weight: 800; }
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .option {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+      user-select: none;
+    }
+    .option:hover { border-color: #cbd5e1; background: #f1f5f9; }
+    .option.checked { border-color: #a855f7; background: #faf5ff; }
+    .option input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      cursor: pointer;
+      accent-color: #a855f7;
+      flex-shrink: 0;
+    }
+    .option-label {
+      font-size: 14px;
+      color: #1e293b;
+      cursor: pointer;
+      line-height: 1.6;
+      flex: 1;
+    }
+    .option-label strong { color: #6d28d9; }
+    .option-label small {
+      display: block;
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 3px;
+      font-weight: 600;
+    }
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .btn {
+      flex: 1;
+      padding: 15px 24px;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      border: none;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .btn-accept {
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      color: #fff;
+      box-shadow: 0 6px 20px rgba(168, 85, 247, 0.3);
+    }
+    .btn-accept:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(168, 85, 247, 0.4);
+    }
+    .btn-accept:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .btn-reject {
+      background: #f1f5f9;
+      color: #64748b;
+      flex: 0 0 130px;
+    }
+    .btn-reject:hover { background: #e2e8f0; color: #334155; }
+    .footer {
+      text-align: center;
+      padding: 20px 40px 32px;
+      background: #f8fafc;
+      border-top: 1px solid #f1f5f9;
+      font-size: 12px;
+      color: #94a3b8;
+    }
+    @media (max-width: 640px) {
+      body { padding: 12px 8px 24px; }
+      .header { padding: 24px 20px 20px; }
+      .header-icon { width: 56px; height: 56px; font-size: 24px; }
+      .header h1 { font-size: 19px; }
+      .header p { font-size: 12.5px; }
+      .content-wrap { padding: 20px 20px 18px; }
+      .footer { padding: 16px 20px 24px; }
+      .content-scroll { max-height: 300px; }
+      h2 { font-size: 15.5px; }
+      p, li { font-size: 13.5px; }
+      .actions { flex-direction: column-reverse; }
+      .btn-reject { flex: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="header-icon">📜</div>
+    <h1>اتفاقية ترخيص المستخدم النهائي</h1>
+    <p>End User License Agreement (EULA)</p>
+  </div>
+
+  <div class="content-wrap">
+    <div class="last-update">
+      آخر تحديث: <span id="last-update-date">—</span>
+    </div>
+
+    <div class="info">
+      <strong>ℹ️ ملاحظة مهمة:</strong>
+      يرجى قراءة هذه الاتفاقية بعناية قبل المتابعة. بالضغط على "موافق ومتابعة"،
+      فإنك تُقر بموافقتك على جميع الشروط الواردة أدناه.
+    </div>
+
+    <div class="content-scroll">
+      <h2>1. منح الترخيص</h2>
+      <p>
+        يمنحك مطوّر MiraclePOS ترخيصاً <strong>محدوداً، غير حصري، وغير قابل
+        للنقل</strong> لاستخدام هذا البرنامج لأغراض إدارة صيدليتك.
+      </p>
+
+      <h2>2. القيود</h2>
+      <p>لا يحق لك:</p>
+      <ul>
+        <li>نسخ البرنامج أو إعادة بيعه أو تأجيره.</li>
+        <li>إجراء هندسة عكسية أو محاولة استخراج الكود المصدري.</li>
+        <li>تعديل البرنامج أو دمجه مع أنظمة أخرى.</li>
+        <li>استخدام البرنامج في أكثر من صيدلية واحدة (إلا بترخيص منفصل).</li>
+      </ul>
+
+      <h2>3. الملكية</h2>
+      <p>
+        جميع حقوق الملكية الفكرية للبرنامج تبقى ملكاً حصرياً للمطوّر.
+        البرنامج يُرخَّص، ولا يُبَاع.
+      </p>
+
+      <h2>4. مسؤوليتك</h2>
+      <p>أنت مسؤول عن:</p>
+      <ul>
+        <li>حماية بياناتك وكلمات المرور.</li>
+        <li>الاحتفاظ بنسخ احتياطية دورية.</li>
+        <li>الاستخدام القانوني للبرنامج.</li>
+        <li>موافقة عملائك على تخزين بياناتهم.</li>
+      </ul>
+
+      <h2>5. حدود مسؤولية المطوّر</h2>
+      <p>
+        مسؤولية المطوّر محدودة بمبلغ الترخيص المدفوع. لا يتحمل المطوّر
+        مسؤولية:
+      </p>
+      <ul>
+        <li>ضياع البيانات بسبب عدم وجود نسخ احتياطي.</li>
+        <li>انقطاع الكهرباء أو الإنترنت.</li>
+        <li>اختراق السيرفر إذا كان العميل مسؤولاً عن تأمينه.</li>
+        <li>أخطاء إدخال البيانات من الموظفين.</li>
+      </ul>
+
+      <h2>6. الإنهاء</h2>
+      <p>
+        يحق للمطوّر إنهاء الترخيص إذا خالفت هذه الشروط. عند الإنهاء
+        يحق لك تصدير بياناتك.
+      </p>
+
+      <h2>7. القانون المُطبَّق</h2>
+      <p>
+        تخضع هذه الاتفاقية لأحكام القوانين السارية في الجمهورية السودانية.
+      </p>
+    </div>
+
+    <div class="options">
+      <label class="option" id="opt-accept">
+        <input type="checkbox" id="chk-accept">
+        <span class="option-label">
+          <strong>أُقر بأنني قرأت وفهمت شروط هذه الاتفاقية</strong>
+          <small>يجب الموافقة على هذا البند للتمكن من المتابعة</small>
+        </span>
+      </label>
+
+      <label class="option" id="opt-dont-show">
+        <input type="checkbox" id="chk-dont-show">
+        <span class="option-label">
+          لا تعرض هذه الاتفاقية مجدداً على هذا الجهاز
+          <small>يُخزَّن اختيارك محلياً ويتجاوز شاشة الاتفاقية في المرات القادمة</small>
+        </span>
+      </label>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-reject" id="btn-reject">← رفض</button>
+      <button class="btn btn-accept" id="btn-accept" disabled>موافق ومتابعة →</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    MiraclePOS © <span id="current-year">—</span> — جميع الحقوق محفوظة
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   Constants
+   ═══════════════════════════════════════════════════════════════════ */
+const EULA_VERSION = '1.0.0';
+const EULA_KEY = 'miraclepos_eula_acceptance';
+
+/* ═══════════════════════════════════════════════════════════════════
+   Helpers
+   ═══════════════════════════════════════════════════════════════════ */
+function getBasePath() {
+  const path = window.location.pathname;
+  const legalIdx = path.indexOf('/legal/');
+  if (legalIdx !== -1) {
+    return path.substring(0, legalIdx + 1);
+  }
+  const segments = path.split('/').filter(Boolean);
+  if (segments.length > 0) {
+    return '/' + segments[0] + '/';
+  }
+  return '/';
+}
+
+function resolveDestination() {
+  const base = getBasePath();
+  const params = new URLSearchParams(window.location.search);
+  const redirect = params.get('redirect');
+
+  if (redirect) {
+    let cleanPath = redirect.replace(/^\/+/, '');
+    if (cleanPath && !cleanPath.startsWith('//') && !cleanPath.includes('://')) {
+      const finalUrl = base + cleanPath;
+      console.log('EULA redirect to:', finalUrl);
+      return finalUrl;
+    }
+  }
+
+  try {
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    if (user?.role === 'admin')   return base + 'admin.html';
+    if (user?.role === 'cashier') return base + 'shift.html';
+  } catch (e) { /* ignore */ }
+
+  return base + 'login.html';
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Init
+   ═══════════════════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  const lastUpdateDate = document.getElementById('last-update-date');
+  const currentYear    = document.getElementById('current-year');
+  const chkAccept      = document.getElementById('chk-accept');
+  const chkDontShow    = document.getElementById('chk-dont-show');
+  const optAccept      = document.getElementById('opt-accept');
+  const optDontShow    = document.getElementById('opt-dont-show');
+  const btnAccept      = document.getElementById('btn-accept');
+  const btnReject      = document.getElementById('btn-reject');
+
+  /* ═══ Date ═══ */
+  const now = new Date();
+  try {
+    lastUpdateDate.textContent = new Intl.DateTimeFormat('ar-EG-u-nu-latn', {
+      year: 'numeric', month: 'long', day: 'numeric',
+    }).format(now);
+  } catch {
+    lastUpdateDate.textContent = now.toLocaleDateString('en-GB');
+  }
+  currentYear.textContent = now.getFullYear();
+
+  /* ═══ Checkbox events ═══ */
+  chkAccept.addEventListener('change', () => {
+    optAccept.classList.toggle('checked', chkAccept.checked);
+    btnAccept.disabled = !chkAccept.checked;
+  });
+
+  chkDontShow.addEventListener('change', () => {
+    optDontShow.classList.toggle('checked', chkDontShow.checked);
+  });
+
+  /* ═══ Accept ═══ */
+  btnAccept.addEventListener('click', () => {
+    if (!chkAccept.checked) return;
+
+    let userEmail = null;
+    let userRole = null;
+    try {
+      const user = JSON.parse(localStorage.getItem('user') || 'null');
+      userEmail = user?.email ?? null;
+      userRole = user?.role ?? null;
+    } catch (e) { /* ignore */ }
+
+    const acceptance = {
+      accepted: true,
+      accepted_at: new Date().toISOString(),
+      version: EULA_VERSION,
+      dont_show_again: chkDontShow.checked,
+      user_email: userEmail,
+      user_role: userRole,
+      user_agent: navigator.userAgent,
+    };
+
+    try {
+      localStorage.setItem(EULA_KEY, JSON.stringify(acceptance));
+    } catch (e) {
+      console.error('Failed to save EULA acceptance:', e);
+    }
+
+    const destination = resolveDestination();
+    window.location.href = destination;
+  });
+
+  /* ═══ Reject ═══ */
+  btnReject.addEventListener('click', () => {
+    const confirmed = confirm(
+      'إذا رفضت الاتفاقية، لن تتمكن من استخدام النظام.\n\n' +
+      'هل أنت متأكد من الرفض والعودة لصفحة تسجيل الدخول؟'
+    );
+    if (!confirmed) return;
+
+    const base = getBasePath();
+    window.location.href = base + 'login.html';
+  });
+
+  /* ═══ Focus ═══ */
+  chkAccept.focus();
+});
+</script>
+
+</body>
+</html>

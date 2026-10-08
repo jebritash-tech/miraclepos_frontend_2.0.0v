@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ماسح الباركود - MiraclePOS</title>
+    <meta name="theme-color" content="#059669">
+    <link rel="manifest" href="./manifest.json">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', 'Arial', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 16px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header h1 i { color: #10b981; }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .status.connected { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .status.disconnected { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .status.connecting { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .status.waiting { background: rgba(139, 92, 246, 0.2); color: #8b5cf6; }
+
+        .status .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .camera-wrapper {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #000;
+        }
+
+        /* ✅ CSS محسّن لحاوية القارئ */
+        #reader {
+            position: relative !important;
+            width: 100% !important;
+            height: 100% !important;
+            min-height: 300px !important;
+            background: #000 !important;
+            overflow: hidden !important;
+        }
+
+        #reader video {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            z-index: 5 !important;
+        }
+
+        #reader > div {
+            border: none !important;
+            padding: 0 !important;
+        }
+
+        /* إخفاء لوحة تحكم Html5Qrcode الداخلية */
+        #reader__dashboard,
+        #reader__scan_region img[alt="Info icon"],
+        #reader__header_message {
+            display: none !important;
+        }
+
+        .scan-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .scan-frame {
+            width: 75%;
+            max-width: 320px;
+            aspect-ratio: 1.5;
+            position: relative;
+            border-radius: 16px;
+        }
+
+        .scan-frame .corner-tl,
+        .scan-frame .corner-tr,
+        .scan-frame .corner-bl,
+        .scan-frame .corner-br {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-color: #10b981;
+            border-style: solid;
+        }
+
+        .corner-tl { top: 0; right: 0; border-width: 4px 4px 0 0; border-radius: 0 16px 0 0; }
+        .corner-tr { top: 0; left: 0; border-width: 4px 0 0 4px; border-radius: 16px 0 0 0; }
+        .corner-bl { bottom: 0; right: 0; border-width: 0 4px 4px 0; border-radius: 0 0 16px 0; }
+        .corner-br { bottom: 0; left: 0; border-width: 0 0 4px 4px; border-radius: 0 0 0 16px; }
+
+        .scan-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #10b981, transparent);
+            box-shadow: 0 0 20px 4px rgba(16, 185, 129, 0.6);
+            animation: scanLine 2s ease-in-out infinite;
+        }
+
+        @keyframes scanLine {
+            0%, 100% { top: 5%; opacity: 0.5; }
+            50% { top: 95%; opacity: 1; }
+        }
+
+        .last-scan {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-family: monospace;
+            font-size: 14px;
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            animation: slideUp 0.3s ease;
+            z-index: 20;
+            white-space: nowrap;
+            max-width: 90%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translate(-50%, 20px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+
+        .footer {
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            z-index: 100;
+        }
+
+        .footer .stat {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .footer .stat strong { color: #10b981; font-weight: 800; }
+
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.5s;
+            padding: 20px;
+        }
+
+        .loading-overlay.hidden { opacity: 0; pointer-events: none; }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(16, 185, 129, 0.2);
+            border-top-color: #10b981;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .loading-overlay p {
+            color: #94a3b8;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        /* لوحة التشخيص */
+        .debug-panel {
+            margin-top: 24px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 14px;
+            width: 100%;
+            max-width: 400px;
+            font-family: monospace;
+            font-size: 12px;
+            text-align: right;
+            direction: rtl;
+        }
+
+        .debug-panel .debug-title {
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: #fbbf24;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 13px;
+        }
+
+        .debug-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+        }
+
+        .debug-item:last-child { border-bottom: none; }
+
+        .debug-key { color: #94a3b8; }
+
+        .debug-value.ok { color: #10b981; font-weight: 700; }
+        .debug-value.fail { color: #ef4444; font-weight: 700; }
+        .debug-value.pending { color: #f59e0b; }
+
+        .error-box {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.98);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            z-index: 999;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .error-box i {
+            font-size: 60px;
+            color: #ef4444;
+            margin-bottom: 16px;
+        }
+
+        .error-box h2 { font-size: 20px; margin-bottom: 12px; }
+        .error-box p {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 12px;
+            line-height: 1.6;
+            max-width: 400px;
+            white-space: pre-line;
+        }
+
+        .error-box .detail {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 10px;
+            padding: 12px;
+            margin: 16px 0;
+            font-family: monospace;
+            font-size: 12px;
+            color: #fca5a5;
+            text-align: right;
+            direction: rtl;
+            max-width: 400px;
+            word-break: break-all;
+            white-space: pre-wrap;
+        }
+
+        .error-box button {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .manual-mode {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            display: none;
+            flex-direction: column;
+            z-index: 500;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .manual-mode.active { display: flex; }
+
+        .manual-step {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(16, 185, 129, 0.2);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .manual-step.active {
+            border-color: #10b981;
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);
+        }
+
+        .manual-step h2 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .manual-step p {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .qr-display {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            display: inline-block;
+            margin: 12px auto;
+            min-width: 280px;
+            min-height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-display #answerQRContainer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-display #answerQRContainer img,
+        .qr-display #answerQRContainer canvas {
+            display: block;
+            max-width: 280px;
+            height: auto;
+        }
+
+        .camera-input {
+            width: 100%;
+            max-width: 400px;
+            margin: 12px auto;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #000;
+            min-height: 300px;
+        }
+
+        .flash {
+            position: fixed;
+            inset: 0;
+            background: white;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 9999;
+            animation: flash 0.3s ease-out;
+        }
+
+        @keyframes flash {
+            0% { opacity: 0.8; }
+            100% { opacity: 0; }
+        }
+
+        .camera-test-btn {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+    </style>
+    <link rel="stylesheet" href="./no-zoom.css">
+</head>
+<body>
+    <!-- شاشة تحميل فورية -->
+    <div id="initial-loader" style="
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 99999;
+        transition: opacity 0.4s;
+        padding: 20px;
+    ">
+        <div style="
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(16, 185, 129, 0.2);
+            border-top-color: #10b981;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        "></div>
+        <p style="
+            color: #94a3b8;
+            font-size: 14px;
+            font-family: Cairo, Arial, sans-serif;
+            margin: 0 0 16px 0;
+        ">جاري التحميل...</p>
+
+        <div class="debug-panel" id="debugPanel">
+            <div class="debug-title">
+                <i class="fas fa-stethoscope"></i>
+                تشخيص النظام
+            </div>
+            <div class="debug-item">
+                <span class="debug-key">Html5Qrcode</span>
+                <span class="debug-value pending" id="dbg-html5">⏳ انتظار</span>
+            </div>
+            <div class="debug-item">
+                <span class="debug-key">SimplePeer</span>
+                <span class="debug-value pending" id="dbg-simplepeer">⏳ انتظار</span>
+            </div>
+            <div class="debug-item">
+                <span class="debug-key">PeerJS</span>
+                <span class="debug-value pending" id="dbg-peer">⏳ انتظار</span>
+            </div>
+            <div class="debug-item">
+                <span class="debug-key">QRCode (qrcodejs)</span>
+                <span class="debug-value pending" id="dbg-qrcode">⏳ انتظار</span>
+            </div>
+            <div class="debug-item">
+                <span class="debug-key">HTTPS</span>
+                <span class="debug-value pending" id="dbg-https">⏳</span>
+            </div>
+            <div class="debug-item">
+                <span class="debug-key">Online</span>
+                <span class="debug-value pending" id="dbg-online">⏳</span>
+            </div>
+            <div class="debug-item">
+                <span class="debug-key">Camera API</span>
+                <span class="debug-value pending" id="dbg-camera">⏳</span>
+            </div>
+            <div class="debug-item">
+                <span class="debug-key">Camera Permission</span>
+                <span class="debug-value pending" id="dbg-permission">⏳</span>
+            </div>
+        </div>
+
+        <button class="camera-test-btn" onclick="testCameraManually()">
+            <i class="fas fa-camera"></i>
+            اختبار الكاميرا يدوياً
+        </button>
+
+        <style>
+            @keyframes spin { to { transform: rotate(360deg); } }
+            #initial-loader.hidden { opacity: 0; pointer-events: none; }
+        </style>
+    </div>
+
+    <div class="loading-overlay hidden" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p id="loadingText">جاري التهيئة...</p>
+    </div>
+
+    <div class="error-box" id="errorBox">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h2 id="errorTitle">تعذر الاتصال</h2>
+        <p id="errorText">يرجى إعادة فتح الرابط من الكمبيوتر.</p>
+        <div class="detail" id="errorDetail" style="display: none;"></div>
+        <button onclick="location.reload()">🔄 إعادة المحاولة</button>
+    </div>
+
+    <!-- Auto Mode -->
+    <div id="autoMode" style="display: none; flex-direction: column; flex: 1;">
+        <div class="header">
+            <h1><i class="fas fa-barcode"></i> ماسح الباركود</h1>
+            <div class="status connecting" id="connectionStatus">
+                <span class="dot"></span>
+                <span class="status-text">جاري الاتصال...</span>
+            </div>
+        </div>
+
+        <div class="camera-wrapper">
+            <div id="reader"></div>
+
+            <div class="scan-overlay">
+                <div class="scan-frame">
+                    <div class="corner-tl"></div>
+                    <div class="corner-tr"></div>
+                    <div class="corner-bl"></div>
+                    <div class="corner-br"></div>
+                    <div class="scan-line"></div>
+                </div>
+            </div>
+
+            <div class="last-scan" id="lastScan" style="display: none;">
+                <i class="fas fa-check-circle"></i>
+                <span id="lastScanCode"></span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="stat">
+                <i class="fas fa-bullseye"></i>
+                مسحات ناجحة: <strong id="scanCount">0</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manual Mode -->
+    <div class="manual-mode" id="manualMode">
+        <div class="header" style="margin-bottom: 16px; border-radius: 16px;">
+            <h1><i class="fas fa-wifi-slash"></i> وضع بدون إنترنت</h1>
+            <div class="status waiting">
+                <span class="dot"></span>
+                <span>يدوي</span>
+            </div>
+        </div>
+
+        <div class="manual-step active" id="step1">
+            <h2><i class="fas fa-qrcode"></i> الخطوة 1: امسح الرمز من الكمبيوتر</h2>
+            <p>وجّه كاميرا هذا الجهاز نحو رمز QR المعروض على شاشة الكمبيوتر.</p>
+            <div class="camera-input" id="offerScanner"></div>
+        </div>
+
+        <div class="manual-step" id="step2" style="display: none;">
+            <h2><i class="fas fa-check-circle" style="color: #10b981;"></i> الخطوة 2: امسح هذا الرمز بالكمبيوتر</h2>
+            <p>اعرض هذا الرمز على شاشة الكمبيوتر حتى يمسحه.</p>
+            <div class="qr-display">
+                <div id="answerQRContainer"></div>
+            </div>
+        </div>
+
+        <div class="manual-step" id="step3" style="display: none;">
+            <h2><i class="fas fa-check-double" style="color: #10b981;"></i> تم الاتصال!</h2>
+            <p>جاهز للمسح. وجّه كاميرا الهاتف نحو الباركود.</p>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         المكتبات
+         ═══════════════════════════════════════════════════════════ -->
+    <script>
+        window.__libStatus = {
+            html5: false,
+            simplepeer: false,
+            peer: false,
+            qrcode: false,
+        };
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"
+            onerror="window.__libStatus.html5Error = 'فشل تحميل html5-qrcode';"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"
+            onerror="window.__libStatus.peerError = 'فشل تحميل PeerJS';"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/simple-peer@9.11.1/simplepeer.min.js"
+            onerror="window.__libStatus.simplepeerError = 'فشل تحميل SimplePeer';"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
+            onerror="window.__libStatus.qrcodeError = 'فشل تحميل qrcodejs';"></script>
+
+    <script>
+        window.__libStatus.html5 = (typeof Html5Qrcode !== 'undefined');
+        window.__libStatus.simplepeer = (typeof SimplePeer !== 'undefined');
+        window.__libStatus.peer = (typeof Peer !== 'undefined');
+        window.__libStatus.qrcode = (typeof QRCode !== 'undefined');
+    </script>
+
+    <script>
+    (function () {
+        'use strict';
+
+        // ═══════════════════════════════════════════════════════════
+        // Debug
+        // ═══════════════════════════════════════════════════════════
+        function setDebug(id, value, status) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.textContent = value;
+            el.className = 'debug-value ' + (status || '');
+        }
+
+        function updateDebugPanel() {
+            const s = window.__libStatus;
+
+            setDebug('dbg-html5', s.html5 ? '✅ محمّلة' : (s.html5Error || '❌ غير محمّلة'), s.html5 ? 'ok' : 'fail');
+            setDebug('dbg-simplepeer', s.simplepeer ? '✅ محمّلة' : (s.simplepeerError || '❌ غير محمّلة'), s.simplepeer ? 'ok' : 'fail');
+            setDebug('dbg-peer', s.peer ? '✅ محمّلة' : (s.peerError || '❌ غير محمّلة'), s.peer ? 'ok' : 'fail');
+            setDebug('dbg-qrcode', s.qrcode ? '✅ محمّلة' : (s.qrcodeError || '❌ غير محمّلة'), s.qrcode ? 'ok' : 'fail');
+            setDebug('dbg-https', window.location.protocol === 'https:' ? '✅ آمن' : '⚠️ غير آمن', window.location.protocol === 'https:' ? 'ok' : 'pending');
+            setDebug('dbg-online', navigator.onLine ? '✅ متصل' : '❌ غير متصل', navigator.onLine ? 'ok' : 'fail');
+
+            const hasMedia = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+            setDebug('dbg-camera', hasMedia ? '✅ متاح' : '❌ غير متاح', hasMedia ? 'ok' : 'fail');
+
+            if (navigator.permissions && navigator.permissions.query) {
+                navigator.permissions.query({ name: 'camera' })
+                    .then(result => {
+                        const labels = {
+                            'granted': '✅ مسموح',
+                            'denied': '❌ مرفوض',
+                            'prompt': '⏳ لم يُطلب',
+                        };
+                        const stat = result.state === 'granted' ? 'ok'
+                                   : result.state === 'denied' ? 'fail'
+                                   : 'pending';
+                        setDebug('dbg-permission', labels[result.state] || result.state, stat);
+                    })
+                    .catch(() => setDebug('dbg-permission', '⚠️ غير معروف', 'pending'));
+            } else {
+                setDebug('dbg-permission', '⚠️ API غير مدعوم', 'pending');
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Helpers
+        // ═══════════════════════════════════════════════════════════
+        function hideInitialLoader() {
+            const loader = document.getElementById('initial-loader');
+            if (loader) {
+                loader.classList.add('hidden');
+                setTimeout(() => { if (loader.parentNode) loader.remove(); }, 500);
+            }
+        }
+
+        function showError(title, message, detail) {
+            const titleEl = document.getElementById('errorTitle');
+            const textEl = document.getElementById('errorText');
+            const detailEl = document.getElementById('errorDetail');
+
+            if (titleEl) titleEl.textContent = title || 'خطأ';
+            if (textEl) textEl.textContent = message || '';
+
+            if (detail) {
+                detailEl.textContent = detail;
+                detailEl.style.display = 'block';
+            } else {
+                detailEl.style.display = 'none';
+            }
+
+            const errorBox = document.getElementById('errorBox');
+            if (errorBox) errorBox.style.display = 'flex';
+
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) loadingOverlay.classList.add('hidden');
+
+            hideInitialLoader();
+        }
+
+        function hideLoading() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) loadingOverlay.classList.add('hidden');
+            hideInitialLoader();
+        }
+
+        function updateConnectionStatus(status, text) {
+            const connectionStatus = document.getElementById('connectionStatus');
+            if (!connectionStatus) return;
+            connectionStatus.className = 'status ' + status;
+            const textEl = connectionStatus.querySelector('.status-text');
+            if (textEl) textEl.textContent = text;
+        }
+
+        function flashScreen() {
+            const flash = document.createElement('div');
+            flash.className = 'flash';
+            document.body.appendChild(flash);
+            setTimeout(() => flash.remove(), 400);
+        }
+
+        let audioContext = null;
+        function playBeep() {
+            try {
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.frequency.value = 1400;
+                osc.type = 'sine';
+                gain.gain.setValueAtTime(0.15, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.12);
+                osc.start(audioContext.currentTime);
+                osc.stop(audioContext.currentTime + 0.12);
+            } catch (e) {}
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // State
+        // ═══════════════════════════════════════════════════════════
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode') || 'auto';
+        const peerId = urlParams.get('peer');
+
+        const state = {
+            mode: mode,
+            peer: null,
+            connection: null,
+            simplePeer: null,
+            isConnected: false,
+            html5QrCode: null,
+            offerScanner: null,
+            scanCount: 0,
+            lastSentCode: '',
+            lastSentTime: 0,
+            cameraActive: false,
+        };
+
+        // ═══════════════════════════════════════════════════════════
+        // Barcode Sender
+        // ═══════════════════════════════════════════════════════════
+        function sendBarcode(code) {
+            const now = Date.now();
+            if (code === state.lastSentCode && (now - state.lastSentTime) < 2000) return false;
+
+            let sent = false;
+
+            if (state.connection && state.connection.open) {
+                try {
+                    state.connection.send({ type: 'barcode', code, timestamp: now });
+                    sent = true;
+                } catch (e) { console.error(e); }
+            }
+
+            if (!sent && state.simplePeer && state.simplePeer.connected) {
+                try {
+                    state.simplePeer.send(JSON.stringify({ type: 'barcode', code, timestamp: now }));
+                    sent = true;
+                } catch (e) { console.error(e); }
+            }
+
+            if (sent) {
+                state.lastSentCode = code;
+                state.lastSentTime = now;
+                state.scanCount++;
+
+                const scanCountEl = document.getElementById('scanCount');
+                const lastScanCode = document.getElementById('lastScanCode');
+                const lastScan = document.getElementById('lastScan');
+
+                if (scanCountEl) scanCountEl.textContent = state.scanCount;
+                if (lastScanCode) lastScanCode.textContent = code;
+                if (lastScan) lastScan.style.display = 'block';
+                setTimeout(() => { if (lastScan) lastScan.style.display = 'none'; }, 1500);
+
+                flashScreen();
+                playBeep();
+                if (navigator.vibrate) navigator.vibrate(50);
+            }
+
+            return sent;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // ✅ تشغيل كاميرا الباركود
+        // ═══════════════════════════════════════════════════════════
+        async function activateCamera() {
+            if (state.html5QrCode) {
+                console.log('⚠️ Camera already active');
+                return;
+            }
+
+            const readerEl = document.getElementById('reader');
+            if (!readerEl) throw new Error('Reader element not found');
+
+            // تأكد من عدم وجود فيديو قديم
+            readerEl.innerHTML = '';
+
+            console.log('📷 Creating Html5Qrcode...');
+
+            state.html5QrCode = new Html5Qrcode('reader', {
+                formatsToSupport: [
+                    Html5QrcodeSupportedFormats.EAN_13,
+                    Html5QrcodeSupportedFormats.EAN_8,
+                    Html5QrcodeSupportedFormats.CODE_128,
+                    Html5QrcodeSupportedFormats.CODE_39,
+                    Html5QrcodeSupportedFormats.UPC_A,
+                    Html5QrcodeSupportedFormats.UPC_E,
+                    Html5QrcodeSupportedFormats.QR_CODE,
+                    Html5QrcodeSupportedFormats.CODE_93,
+                    Html5QrcodeSupportedFormats.ITF,
+                    Html5QrcodeSupportedFormats.CODABAR,
+                ],
+                verbose: false,
+                experimentalFeatures: {
+                    useBarCodeDetectorIfSupported: true,
+                },
+            });
+
+            const config = {
+                fps: 15,
+                qrbox: (w, h) => {
+                    const minEdge = Math.min(w, h);
+                    const size = Math.floor(minEdge * 0.7);
+                    return { width: size, height: size };
+                },
+                aspectRatio: 1.0,
+                disableFlip: false,
+                videoConstraints: {
+                    facingMode: { ideal: 'environment' },
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
+                },
+            };
+
+            console.log('📷 Starting Html5Qrcode...');
+
+            try {
+                await state.html5QrCode.start(
+                    { facingMode: 'environment' },
+                    config,
+                    onScanSuccess,
+                    () => {}
+                );
+
+                console.log('✅ Html5Qrcode started successfully');
+                state.cameraActive = true;
+
+                // تأكد من أن الفيديو مرئي
+                setTimeout(() => {
+                    const video = document.querySelector('#reader video');
+                    if (video) {
+                        video.style.display = 'block';
+                        video.style.visibility = 'visible';
+                        video.style.opacity = '1';
+                        video.setAttribute('playsinline', 'true');
+                        video.setAttribute('autoplay', 'true');
+                        video.setAttribute('muted', 'true');
+                        console.log('✅ Video verified:', video.videoWidth, 'x', video.videoHeight);
+                    }
+                }, 1000);
+
+            } catch (err) {
+                console.error('❌ Html5Qrcode.start error:', err);
+                throw err;
+            }
+        }
+
+        function onScanSuccess(decodedText) {
+            sendBarcode(decodedText);
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // AUTO MODE
+        // ═══════════════════════════════════════════════════════════
+        async function startAutoMode() {
+            document.getElementById('autoMode').style.display = 'flex';
+
+            if (!peerId) {
+                showError('معرّف مفقود', 'الرابط لا يحتوي على معرّف الاتصال.');
+                return;
+            }
+
+            const loadingText = document.getElementById('loadingText');
+            if (loadingText) loadingText.textContent = 'جاري تشغيل الكاميرا...';
+
+            // ✅ شغّل الكاميرا مباشرة
+            try {
+                await activateCamera();
+                hideLoading();
+                updateDebugPanel();
+            } catch (err) {
+                console.error('❌ Camera error:', err);
+
+                let title = 'تعذر فتح الكاميرا';
+                let msg = '';
+                let detail = `name: ${err.name || 'N/A'}\nmessage: ${err.message || 'N/A'}\n` +
+                             `string: ${String(err)}`;
+
+                if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                    msg = 'يجب السماح بالوصول للكاميرا.\n\n' +
+                          'الحل:\n' +
+                          '1. افتح إعدادات Chrome\n' +
+                          '2. المواقع → الكاميرا\n' +
+                          '3. اسمح للموقع';
+                } else if (err.name === 'NotFoundError') {
+                    msg = 'لا توجد كاميرا على هذا الجهاز.';
+                } else if (err.name === 'NotReadableError' || String(err).includes('NotReadable')) {
+                    msg = 'الكاميرا مستخدمة من تطبيق آخر. أغلق التطبيقات الأخرى.';
+                } else if (err.name === 'OverconstrainedError') {
+                    msg = 'مواصفات الكاميرا غير مدعومة.';
+                } else if (String(err).toLowerCase().includes('secure')) {
+                    msg = 'يجب استخدام HTTPS لفتح الكاميرا.';
+                } else {
+                    msg = err.message || String(err) || 'خطأ غير معروف';
+                }
+
+                showError(title, msg, detail);
+                return;
+            }
+
+            // الآن اتصل بـ PeerJS
+            if (loadingText) loadingText.textContent = 'جاري الاتصال بالكمبيوتر...';
+
+            try {
+                state.peer = new Peer({ debug: 1 });
+            } catch (err) {
+                console.error('❌ Peer init error:', err);
+                updateConnectionStatus('disconnected', 'فشل');
+                return;
+            }
+
+            state.peer.on('open', (id) => {
+                console.log('📱 Phone ready, ID:', id);
+
+                const conn = state.peer.connect(peerId, {
+                    reliable: true,
+                    serialization: 'json',
+                });
+
+                state.connection = conn;
+
+                conn.on('open', () => {
+                    console.log('✅ Connected to computer');
+                    state.isConnected = true;
+                    updateConnectionStatus('connected', 'متصل');
+                    conn.send({ type: 'hello', device: navigator.userAgent });
+                });
+
+                conn.on('data', (data) => {
+                    if (data && data.type === 'ack') {}
+                });
+
+                conn.on('close', () => {
+                    state.isConnected = false;
+                    updateConnectionStatus('disconnected', 'انقطع');
+                });
+
+                conn.on('error', (err) => {
+                    console.error('Connection error:', err);
+                    state.isConnected = false;
+                    updateConnectionStatus('disconnected', 'خطأ');
+                });
+            });
+
+            state.peer.on('error', (err) => {
+                console.error('Peer error:', err);
+
+                let statusText = 'فشل الاتصال';
+                if (err.type === 'peer-unavailable') statusText = 'الكمبيوتر غير متاح';
+                else if (err.type === 'network') statusText = 'مشكلة في الشبكة';
+                else if (err.type === 'server-error') statusText = 'خطأ في الخادم';
+
+                updateConnectionStatus('disconnected', statusText);
+
+                const hint = document.createElement('div');
+                hint.style.cssText = `
+                    position: fixed;
+                    bottom: 60px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: rgba(239, 68, 68, 0.9);
+                    color: white;
+                    padding: 10px 20px;
+                    border-radius: 10px;
+                    font-size: 13px;
+                    z-index: 100;
+                    text-align: center;
+                    max-width: 90%;
+                `;
+                hint.textContent = `⚠️ ${statusText} — الكاميرا تعمل، لكن لن تُرسل المسحات`;
+                document.body.appendChild(hint);
+                setTimeout(() => hint.remove(), 5000);
+            });
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // MANUAL MODE
+        // ═══════════════════════════════════════════════════════════
+        async function startManualMode() {
+            document.getElementById('manualMode').classList.add('active');
+
+            const loadingText = document.getElementById('loadingText');
+            if (loadingText) loadingText.textContent = 'جاري تشغيل الكاميرا...';
+
+            hideLoading();
+            await startOfferScanner();
+        }
+
+        async function startOfferScanner() {
+            const offerEl = document.getElementById('offerScanner');
+            if (!offerEl) {
+                showError('خطأ في الصفحة', 'عنصر الماسح غير موجود.');
+                return;
+            }
+
+            offerEl.innerHTML = '';
+
+            state.offerScanner = new Html5Qrcode('offerScanner', {
+                formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
+                verbose: false,
+            });
+
+            const config = {
+                fps: 10,
+                qrbox: { width: 250, height: 250 },
+                aspectRatio: 1.0,
+                videoConstraints: {
+                    facingMode: { ideal: 'environment' },
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
+                },
+            };
+
+            try {
+                await state.offerScanner.start(
+                    { facingMode: 'environment' },
+                    config,
+                    onOfferScanned,
+                    () => {}
+                );
+            } catch (err) {
+                console.error('Camera error:', err);
+
+                let msg = 'تعذر فتح الكاميرا.';
+                if (err.name === 'NotAllowedError') msg = 'يجب السماح بالوصول للكاميرا.';
+                else if (err.name === 'NotFoundError') msg = 'لا توجد كاميرا على هذا الجهاز.';
+                else if (err.name === 'NotReadableError') msg = 'الكاميرا مستخدمة من تطبيق آخر.';
+
+                showError('تعذر فتح الكاميرا', msg, `${err.name}: ${err.message}`);
+            }
+        }
+
+        async function onOfferScanned(decodedText) {
+            try {
+                if (state.offerScanner) {
+                    await state.offerScanner.stop();
+                    state.offerScanner = null;
+                }
+            } catch (e) {}
+
+            await handleManualOffer(decodedText);
+        }
+
+        async function handleManualOffer(offerData) {
+            try {
+                const decoded = JSON.parse(atob(offerData));
+
+                document.getElementById('step1').style.display = 'none';
+                document.getElementById('step2').style.display = 'block';
+                document.getElementById('step2').classList.add('active');
+
+                state.simplePeer = new SimplePeer({
+                    initiator: false,
+                    trickle: false,
+                    config: {
+                        iceServers: [
+                            { urls: 'stun:stun.l.google.com:19302' },
+                            { urls: 'stun:stun1.l.google.com:19302' },
+                        ],
+                    },
+                });
+
+                state.simplePeer.on('signal', (data) => {
+                    if (data.type === 'answer') {
+                        if (typeof QRCode === 'undefined') {
+                            showError('مكتبة QR مفقودة', 'مكتبة توليد الـ QR لم تُحمّل.');
+                            return;
+                        }
+
+                        const answerEncoded = btoa(JSON.stringify(data));
+                        const container = document.getElementById('answerQRContainer');
+                        if (!container) return;
+
+                        container.innerHTML = '';
+
+                        try {
+                            new QRCode(container, {
+                                text: answerEncoded,
+                                width: 280,
+                                height: 280,
+                                colorDark: '#0f172a',
+                                colorLight: '#ffffff',
+                                correctLevel: QRCode.CorrectLevel.L,
+                            });
+                        } catch (err) {
+                            showError('تعذر توليد QR', 'حدث خطأ أثناء توليد رمز الإجابة.', `${err.name}: ${err.message}`);
+                        }
+                    }
+                });
+
+                state.simplePeer.on('connect', () => {
+                    state.isConnected = true;
+
+                    document.getElementById('step2').style.display = 'none';
+                    document.getElementById('step2').classList.remove('active');
+                    document.getElementById('step3').style.display = 'block';
+                    document.getElementById('step3').classList.add('active');
+
+                    setTimeout(() => {
+                        activateCamera().catch(err => {
+                            console.error('Camera activation error:', err);
+                        });
+                    }, 500);
+                });
+
+                state.simplePeer.on('data', (data) => {
+                    try {
+                        const msg = JSON.parse(data.toString());
+                        if (msg.type === 'ack') {}
+                    } catch (e) {}
+                });
+
+                state.simplePeer.on('error', (err) => {
+                    console.error('SimplePeer error:', err);
+                });
+
+                state.simplePeer.signal(decoded);
+
+            } catch (e) {
+                console.error('Manual offer error:', e);
+                showError('تعذر قراءة QR', 'تعذر قراءة رمز QR. جرّب مرة أخرى.', `${e.name}: ${e.message}`);
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Cleanup
+        // ═══════════════════════════════════════════════════════════
+        window.addEventListener('beforeunload', () => {
+            try { if (state.html5QrCode) state.html5QrCode.stop(); } catch (e) {}
+            try { if (state.offerScanner) state.offerScanner.stop(); } catch (e) {}
+            try { if (state.connection) state.connection.close(); } catch (e) {}
+            try { if (state.peer) state.peer.destroy(); } catch (e) {}
+            try { if (state.simplePeer) state.simplePeer.destroy(); } catch (e) {}
+        });
+
+        // ═══════════════════════════════════════════════════════════
+        // اختبار الكاميرا يدوياً
+        // ═══════════════════════════════════════════════════════════
+        window.testCameraManually = async function () {
+            const loadingText = document.getElementById('loadingText');
+            if (loadingText) loadingText.textContent = 'اختبار الكاميرا...';
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'environment' },
+                    audio: false,
+                });
+                stream.getTracks().forEach(track => track.stop());
+
+                if (loadingText) loadingText.textContent = '✅ الكاميرا تعمل!';
+                updateDebugPanel();
+
+                setTimeout(() => {
+                    if (loadingText) loadingText.textContent = 'جاري التهيئة...';
+                    boot();
+                }, 1500);
+            } catch (err) {
+                console.error('Manual camera test failed:', err);
+                showError(
+                    'فشل اختبار الكاميرا',
+                    'تعذر الوصول للكاميرا.',
+                    `name: ${err.name}\nmessage: ${err.message}`
+                );
+            }
+        };
+
+        // ═══════════════════════════════════════════════════════════
+        // Safety Timeout
+        // ═══════════════════════════════════════════════════════════
+        setTimeout(() => {
+            const loader = document.getElementById('initial-loader');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const errorBox = document.getElementById('errorBox');
+
+            const loadingHidden = loadingOverlay && loadingOverlay.classList.contains('hidden');
+            const stillLoading = loader || !loadingHidden;
+
+            if (stillLoading && errorBox && errorBox.style.display !== 'flex') {
+                updateDebugPanel();
+
+                const s = window.__libStatus;
+                let detail = '';
+                if (!s.html5) detail += '❌ Html5Qrcode غير محمّلة\n';
+                if (!s.peer) detail += '❌ PeerJS غير محمّلة\n';
+                if (!navigator.onLine) detail += '❌ لا يوجد اتصال بالإنترنت\n';
+
+                showError('انتهت المهلة', 'لم تكتمل التهيئة خلال 60 ثانية.', detail || 'افحص أذونات الكاميرا');
+            }
+        }, 60000);
+
+        // ═══════════════════════════════════════════════════════════
+        // Boot
+        // ═══════════════════════════════════════════════════════════
+        function boot() {
+            updateDebugPanel();
+
+            setTimeout(() => {
+                updateDebugPanel();
+
+                const s = window.__libStatus;
+
+                if (mode === 'manual') {
+                    const missing = [];
+                    if (!s.html5) missing.push('Html5Qrcode');
+                    if (!s.simplepeer) missing.push('SimplePeer');
+                    if (!s.qrcode) missing.push('QRCode');
+
+                    if (missing.length > 0) {
+                        showError('مكتبات مفقودة', `لم تُحمّل: ${missing.join(', ')}`);
+                        return;
+                    }
+
+                    hideInitialLoader();
+                    startManualMode();
+                } else {
+                    const missing = [];
+                    if (!s.html5) missing.push('Html5Qrcode');
+                    if (!s.peer) missing.push('PeerJS');
+
+                    if (missing.length > 0) {
+                        showError('مكتبات مفقودة', `لم تُحمّل: ${missing.join(', ')}`);
+                        return;
+                    }
+
+                    if (!peerId) {
+                        showError('معرّف مفقود', 'معرّف الاتصال غير موجود في الرابط.');
+                        return;
+                    }
+
+                    hideInitialLoader();
+                    startAutoMode();
+                }
+            }, 500);
+        }
+
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            setTimeout(boot, 200);
+        } else {
+            window.addEventListener('load', () => setTimeout(boot, 200));
+        }
+
+    })();
+    </script>
+</body>
+</html>

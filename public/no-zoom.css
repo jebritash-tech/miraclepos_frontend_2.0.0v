@@ -1,0 +1,52 @@
+
+/* ═══════════════════════════════════════════════════════════
+   منع التكبير/التصغير على الموبايل
+   ═══════════════════════════════════════════════════════════ */
+
+html {
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    touch-action: manipulation;
+}
+
+body {
+    touch-action: manipulation;
+    overscroll-behavior: none;
+}
+
+* {
+    touch-action: manipulation;
+}
+
+/* السماح بالتمرير العمودي */
+.overflow-y-auto,
+.scrollable,
+[class*="overflow-y"] {
+    touch-action: pan-y;
+}
+
+/* السماح بالتمرير الأفقي */
+.overflow-x-auto,
+[class*="overflow-x"] {
+    touch-action: pan-x;
+}
+
+/* منع iOS zoom عند التركيز */
+@media (max-width: 768px) {
+    input, 
+    select, 
+    textarea {
+        font-size: 16px !important;
+    }
+}
+
+/* إخفاء شريط التمرير */
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}

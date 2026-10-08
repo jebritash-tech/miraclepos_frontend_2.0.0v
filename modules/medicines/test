@@ -1,0 +1,58 @@
+
+  // ===== تشغيل جولة (عامة) =====
+ startTour(tourName, steps) {
+  if (localStorage.getItem(`tour_${tourName}_completed`) === 'true') {
+    this.showToast('لقد أكملت هذه الجولة بالفعل', 'info');
+    return;
+  }
+
+  const initialized = this.initialize(steps);
+  if (initialized) {
+    this.currentTour = tourName;
+    this.driverInstance.drive(); // ← تغيير هنا
+  }
+}
+
+  // ===== تهيئة الـ Driver =====
+// ===== تهيئة الـ Driver =====
+initialize(steps) {
+  try {
+    this.driverInstance = driver({
+      showProgress: true,
+      allowClose: false,
+      nextBtnText: 'التالي',
+      prevBtnText: 'السابق',
+      doneBtnText: 'إنهاء',
+      progressText: 'خطوة {{current}} من {{total}}',
+      onNext: () => {
+        const currentStep = this.driverInstance.getCurrentStep();
+        if (currentStep && currentStep.tab && this.tabSwitcher) {
+          this.tabSwitcher(currentStep.tab);
+        }
+      },
+      onPrevious: () => {},
+      onClose: () => { this.isActive = false; },
+      onDone: () => {
+        this.isActive = false;
+        localStorage.setItem(`tour_${this.currentTour}_completed`, 'true');
+        this.showToast('تم الانتهاء من الجولة', 'success');
+      }
+    });
+
+    // تعيين الخطوات باستخدام الطريقة الصحيحة (حسب الإصدار)
+    if (typeof this.driverInstance.setSteps === 'function') {
+      this.driverInstance.setSteps(steps);
+    } else if (typeof this.driverInstance.steps === 'function') {
+      this.driverInstance.steps(steps);
+    } else {
+      // في الإصدارات الجديدة جداً قد تكون steps خاصية وليست دالة
+      this.driverInstance.steps = steps;
+    }
+
+    return true;
+  } catch (error) {
+    console.error('❌ فشل تهيئة الجولة:', error);
+    this.showToast('حدث خطأ أثناء تهيئة الجولة', 'error');
+    return false;
+  }
+}
