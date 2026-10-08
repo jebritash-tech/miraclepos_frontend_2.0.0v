@@ -58,9 +58,10 @@
 
       <!-- البطاقات الفرعية -->
       <SubCards
-        :inventory="inventory"
-        :profit="profit"
-        :purchases="purchases"
+          :inventory="inventory"
+          :profit="profit"
+          :purchases="purchases"
+          :stats="stats"
       />
 
       <!-- صف المخططات -->
@@ -452,12 +453,21 @@ const fetchData = async () => {
     });
     const data = res.data;
 
-    // البطاقات الرئيسية
+    // ✅ البطاقات الرئيسية — مع الحقول الجديدة
     stats.value = {
-      daily_sales:     Number(data.daily_sales || 0),
-      invoice_count:   Number(data.invoice_count || 0),
-      low_stock_items: Number(data.low_stock_items || 0),
-      expired_count:   Number(data.expired_count || 0)
+      // المبيعات
+      daily_sales:          Number(data.daily_sales || 0),
+      today_net_sales:      Number(data.today_net_sales || 0),
+      today_refunds:        Number(data.today_refunds || 0),
+
+      // الأرباح
+      profit_today:         Number(data.profit_today || 0),
+      today_refunds_profit: Number(data.today_refunds_profit || 0),
+
+      // القديمة
+      invoice_count:        Number(data.invoice_count || 0),
+      low_stock_items:      Number(data.low_stock_items || 0),
+      expired_count:        Number(data.expired_count || 0),
     };
 
     // البطاقات الفرعية
@@ -465,7 +475,12 @@ const fetchData = async () => {
       total_items: Number(data.total_items || 0),
       value:       Number(data.inventory_value || 0)
     };
-    profit.value = { today: Number(data.profit_today || 0) };
+    profit.value = {
+        today:                Number(data.profit_today || 0),
+        refunds_profit:       Number(data.today_refunds_profit || 0),  // ✅ جديد
+        is_zero_due_refunds:  Number(data.profit_today || 0) == 0
+                              && Number(data.today_refunds_profit || 0) > 0,
+    };
     purchases.value = { today: Number(data.shipments_count || 0) };
 
     // المخططات
