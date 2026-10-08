@@ -1,6 +1,7 @@
 <!-- modules/overview/components/SubCards.vue -->
 <template>
   <div class="sub-cards">
+
     <!-- 1. قيمة المخزون -->
     <div class="sub-card">
       <div class="sub-icon"><i class="fas fa-boxes"></i></div>
@@ -25,7 +26,25 @@
         <div class="progress-mini">
           <div class="fill" style="--p:60%; background:linear-gradient(90deg,#f39c12,#e67e22);"></div>
         </div>
-        <span class="sub-subtext">
+
+        <!-- ✅ عرض ربح المرتجعات عند الصفر -->
+        <span v-if="profit?.is_zero_due_refunds"
+              class="sub-subtext"
+              style="color: #dc2626; font-weight: 700;">
+          <i class="fas fa-undo-alt" style="font-size: 9px;"></i>
+          ربح مُرتجَع: {{ formatCurrency(profit?.refunds_profit || 0) }}
+        </span>
+
+        <!-- ✅ عرض خصم المرتجعات عند وجود ربح -->
+        <span v-else-if="Number(profit?.refunds_profit) > 0"
+              class="sub-subtext"
+              style="color: #dc2626; font-weight: 700;">
+          <i class="fas fa-undo-alt" style="font-size: 9px;"></i>
+          خصم مرتجعات: − {{ formatCurrency(profit.refunds_profit) }}
+        </span>
+
+        <!-- ✅ الافتراضي -->
+        <span v-else class="sub-subtext">
           صافي ربح اليوم
         </span>
       </div>
@@ -90,7 +109,6 @@ const formatCurrency = (v) => Number(v || 0).toLocaleString();
   }
 
   .sub-icon {
-    /* تكبير الأيقونة قليلاً لتكون أوضح في المنتصف */
     width: 56px;
     height: 56px;
     font-size: 24px;
