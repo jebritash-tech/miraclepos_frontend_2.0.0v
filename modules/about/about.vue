@@ -171,6 +171,16 @@
         الدعم والمساعدة
       </h2>
       <div class="support-links">
+        <a href="guide.html" target="_blank" class="support-link">
+          <div class="support-icon" style="background: #eff6ff; color: #3b82f6;">
+            <i class="fas fa-question-circle"></i>
+          </div>
+          <div class="support-content">
+            <h3>دليل الاساخدام</h3>
+            <p>دليل البدء السريع + دليل كامل لاستخدام النظام</p>
+          </div>
+          <i class="fas fa-chevron-left support-arrow"></i>
+        </a>
         <a href="faq.html" target="_blank" class="support-link">
           <div class="support-icon" style="background: #eff6ff; color: #3b82f6;">
             <i class="fas fa-question-circle"></i>
