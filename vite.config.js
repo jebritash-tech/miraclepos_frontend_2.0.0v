@@ -6,7 +6,7 @@ import vue from '@vitejs/plugin-vue';
 import path from 'path';
 import { resolve } from 'path';
 export default defineConfig({
-  base: '/miraclepos_frontend-sundos_2.0.0v/',
+  base: '/miraclepos_frontend_2.0.0v/',
   global: 'globalThis',
   resolve: {
     alias: {
