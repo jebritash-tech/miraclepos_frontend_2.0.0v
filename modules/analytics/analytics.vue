@@ -115,46 +115,106 @@
           المؤشرات الرئيسية
         </h2>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+
+          <!-- ✅ مبيعات اليوم (Gross) -->
           <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-white/50 shadow-sm hover:shadow-md transition">
             <div class="text-xs font-medium text-slate-400">مبيعات اليوم</div>
             <div class="text-xl font-bold text-slate-800 mt-1">{{ formatCurrency(kpis.today_sales) }}</div>
+            <!-- ✅ صافي المبيعات -->
+            <div v-if="kpis.today_net_sales !== undefined && kpis.today_net_sales !== kpis.today_sales"
+                class="text-[10px] text-emerald-600 mt-1">
+              صافي: {{ formatCurrency(kpis.today_net_sales) }}
+            </div>
+            <!-- ✅ المرتجعات -->
+            <div v-if="kpis.today_refunds > 0"
+                class="text-[10px] text-rose-500 mt-0.5">
+              مرتجعات: − {{ formatCurrency(kpis.today_refunds) }}
+            </div>
           </div>
+
+          <!-- ✅ ربح اليوم (Net بعد خصم المرتجعات) -->
           <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-white/50 shadow-sm hover:shadow-md transition">
             <div class="text-xs font-medium text-slate-400">ربح اليوم</div>
             <div class="text-xl font-bold text-emerald-600 mt-1">{{ formatCurrency(kpis.today_profit) }}</div>
+            <!-- ✅ ربح المرتجعات -->
+            <div v-if="kpis.today_refunds_profit > 0"
+                class="text-[10px] text-rose-500 mt-1">
+              خصم مرتجعات: − {{ formatCurrency(kpis.today_refunds_profit) }}
+            </div>
           </div>
+
+          <!-- ✅ مبيعات الأسبوع (Gross + Net) -->
           <div class="bg-gradient-to-br from-purple-50 to-purple-100/50 backdrop-blur-sm rounded-2xl p-4 border border-purple-200/50 shadow-sm hover:shadow-md transition">
             <div class="text-xs font-medium text-purple-700">مبيعات الأسبوع</div>
             <div class="text-xl font-bold text-purple-700 mt-1">{{ formatCurrency(kpis.weekly_sales) }}</div>
+            <div v-if="kpis.weekly_net_sales !== undefined && kpis.weekly_net_sales !== kpis.weekly_sales"
+                class="text-[10px] text-purple-600 mt-1">
+              صافي: {{ formatCurrency(kpis.weekly_net_sales) }}
+            </div>
+            <div v-if="kpis.weekly_refunds > 0"
+                class="text-[10px] text-rose-500 mt-0.5">
+              مرتجعات: − {{ formatCurrency(kpis.weekly_refunds) }}
+            </div>
           </div>
+
+          <!-- ✅ أرباح الأسبوع (Net) -->
           <div class="bg-gradient-to-br from-indigo-50 to-indigo-100/50 backdrop-blur-sm rounded-2xl p-4 border border-indigo-200/50 shadow-sm hover:shadow-md transition">
             <div class="text-xs font-medium text-indigo-700">أرباح الأسبوع</div>
             <div class="text-xl font-bold text-indigo-700 mt-1">{{ formatCurrency(kpis.weekly_profit) }}</div>
+            <div v-if="kpis.weekly_refunds_profit > 0"
+                class="text-[10px] text-rose-500 mt-1">
+              خصم مرتجعات: − {{ formatCurrency(kpis.weekly_refunds_profit) }}
+            </div>
           </div>
+
+          <!-- ✅ مبيعات الشهر (Gross + Net) -->
           <div class="bg-gradient-to-br from-blue-50 to-blue-100/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-200/50 shadow-sm hover:shadow-md transition">
             <div class="text-xs font-medium text-blue-700">مبيعات الشهر</div>
             <div class="text-xl font-bold text-blue-700 mt-1">{{ formatCurrency(kpis.monthly_sales) }}</div>
+            <div v-if="kpis.monthly_net_sales !== undefined && kpis.monthly_net_sales !== kpis.monthly_sales"
+                class="text-[10px] text-blue-600 mt-1">
+              صافي: {{ formatCurrency(kpis.monthly_net_sales) }}
+            </div>
+            <div v-if="kpis.monthly_refunds > 0"
+                class="text-[10px] text-rose-500 mt-0.5">
+              مرتجعات: − {{ formatCurrency(kpis.monthly_refunds) }}
+            </div>
           </div>
+
+          <!-- ✅ أرباح الشهر (Net) -->
           <div class="bg-gradient-to-br from-emerald-50 to-emerald-100/50 backdrop-blur-sm rounded-2xl p-4 border border-emerald-200/50 shadow-sm hover:shadow-md transition">
             <div class="text-xs font-medium text-emerald-700">أرباح الشهر</div>
             <div class="text-xl font-bold text-emerald-700 mt-1">{{ formatCurrency(kpis.monthly_profit) }}</div>
+            <div v-if="kpis.monthly_refunds_profit > 0"
+                class="text-[10px] text-rose-500 mt-1">
+              خصم مرتجعات: − {{ formatCurrency(kpis.monthly_refunds_profit) }}
+            </div>
           </div>
+
+          <!-- الفواتير -->
           <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-white/50 shadow-sm hover:shadow-md transition">
             <div class="text-xs font-medium text-slate-400">الفواتير</div>
             <div class="text-xl font-bold text-slate-800 mt-1">{{ kpis.today_invoices || 0 }}</div>
           </div>
+
+          <!-- متوسط الفاتورة -->
           <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-white/50 shadow-sm hover:shadow-md transition">
             <div class="text-xs font-medium text-slate-400">متوسط الفاتورة</div>
             <div class="text-xl font-bold text-slate-800 mt-1">{{ formatCurrency(kpis.avg_invoice) }}</div>
           </div>
+
+          <!-- قيمة المخزون -->
           <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-white/50 shadow-sm hover:shadow-md transition">
             <div class="text-xs font-medium text-slate-400">قيمة المخزون</div>
             <div class="text-xl font-bold text-slate-800 mt-1">{{ formatCurrency(kpis.inventory_value) }}</div>
           </div>
+
+          <!-- رأس المال المجمد -->
           <div class="bg-gradient-to-br from-red-50 to-red-100/50 backdrop-blur-sm rounded-2xl p-4 border border-red-200/50 shadow-sm hover:shadow-md transition">
             <div class="text-xs font-medium text-red-700">رأس المال المجمد</div>
             <div class="text-xl font-bold text-red-700 mt-1">{{ formatCurrency(kpis.frozen_capital) }}</div>
           </div>
+
         </div>
       </section>
 
@@ -230,7 +290,7 @@
                 <thead>
                   <tr class="border-b border-slate-200">
                     <th class="text-right py-3 font-semibold text-slate-500">الدواء</th>
-                    <th class="text-right py-3 font-semibold text-slate-500">الكمية</th>
+                    <th class="text-right py-3 font-semibold text-slate-500">الكمية الصافية</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -384,7 +444,15 @@
               <tr v-for="sale in recentSalesData" :key="sale.id" class="border-b border-slate-100 hover:bg-slate-50/50 transition">
                 <td class="py-3 font-mono font-bold text-slate-700">#{{ sale.id }}</td>
                 <td class="py-3 font-bold text-slate-800">{{ formatCurrency(sale.total_amount) }}</td>
-                <td class="py-3 font-medium text-emerald-600">{{ formatCurrency(sale.profit_amount) }}</td>
+                <td class="py-3 font-medium text-emerald-600">
+                  {{ formatCurrency(sale.profit_amount) }}
+                  <div v-if="sale.is_fully_refunded" class="text-[10px] text-rose-500 font-bold mt-0.5">
+                    مُرتجَعة بالكامل
+                  </div>
+                  <div v-else-if="sale.has_refunds" class="text-[10px] text-amber-500 font-bold mt-0.5">
+                    عليها مرتجع
+                  </div>
+                </td>
                 <td class="py-3 text-xs">
                   <span :class="{
                     'bg-emerald-100 text-emerald-700': sale.payment_method === 'cash',
@@ -959,28 +1027,48 @@ const renderSalesProfitChart = () => {
   if (chartInstances.salesProfit) chartInstances.salesProfit.destroy();
 
   const data = salesProfitChart.value;
+
+  // ✅ هل توجد بيانات net_sales؟
+  const hasNetSales = data.some(d => d.net_sales !== undefined);
+
+  const datasets = [
+    {
+      label: 'المبيعات',
+      data: data.map(d => d.sales),
+      backgroundColor: 'rgba(59, 130, 246, 0.6)',
+      borderColor: 'rgba(59, 130, 246, 1)',
+      borderWidth: 2,
+      borderRadius: 6,
+    },
+  ];
+
+  // ✅ أضف Net Sales إذا موجودة
+  if (hasNetSales) {
+    datasets.push({
+      label: 'صافي المبيعات',
+      data: data.map(d => d.net_sales),
+      backgroundColor: 'rgba(99, 102, 241, 0.6)',
+      borderColor: 'rgba(99, 102, 241, 1)',
+      borderWidth: 2,
+      borderRadius: 6,
+    });
+  }
+
+  // ✅ الربح
+  datasets.push({
+    label: 'الربح',
+    data: data.map(d => d.profit),
+    backgroundColor: 'rgba(16, 185, 129, 0.6)',
+    borderColor: 'rgba(16, 185, 129, 1)',
+    borderWidth: 2,
+    borderRadius: 6,
+  });
+
   chartInstances.salesProfit = new Chart(salesProfitChartRef.value, {
     type: 'bar',
     data: {
       labels: data.map(d => d.month),
-      datasets: [
-        {
-          label: 'المبيعات',
-          data: data.map(d => d.sales),
-          backgroundColor: 'rgba(59, 130, 246, 0.6)',
-          borderColor: 'rgba(59, 130, 246, 1)',
-          borderWidth: 2,
-          borderRadius: 6,
-        },
-        {
-          label: 'الربح',
-          data: data.map(d => d.profit),
-          backgroundColor: 'rgba(16, 185, 129, 0.6)',
-          borderColor: 'rgba(16, 185, 129, 1)',
-          borderWidth: 2,
-          borderRadius: 6,
-        },
-      ],
+      datasets,
     },
     options: {
       responsive: true,
@@ -988,6 +1076,18 @@ const renderSalesProfitChart = () => {
       plugins: {
         legend: { labels: { usePointStyle: true, padding: 20, font: { size: 12 } } },
         datalabels: { display: false },
+        tooltip: {
+          callbacks: {
+            afterLabel: (ctx) => {
+              const item = data[ctx.dataIndex];
+              if (!item) return '';
+              if (item.refunds > 0) {
+                return `مرتجعات الشهر: ${formatCurrency(item.refunds)}`;
+              }
+              return '';
+            },
+          },
+        },
       },
       scales: {
         y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
@@ -996,7 +1096,6 @@ const renderSalesProfitChart = () => {
     },
   });
 };
-
 const renderGrowthChart = () => {
   if (!growthChartRef.value || !growthChart.value?.length) return;
   if (chartInstances.growth) chartInstances.growth.destroy();
